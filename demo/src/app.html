@@ -13,35 +13,55 @@
 :root { --ink: #111; --ink2: #3a3a3a; --fill: #efefef; }
 * { box-sizing: border-box; }
 body { margin: 0; background: #fff; color: var(--ink); font-family: "Atkinson Hyperlegible", sans-serif; font-size: 17px; line-height: 1.45; }
-.wrap { max-width: 880px; margin: 0 auto; padding: 18px 16px 40px; }
-h1 { font-family: "Fredoka", sans-serif; font-weight: 700; font-size: 30px; margin: 4px 0 2px; }
-.sub { color: var(--ink2); margin: 0 0 14px; }
+.wrap { max-width: 1200px; margin: 0 auto; padding: 12px 16px 28px; }
+.top { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.tools { display: flex; gap: 8px; }
+.tools button { font-family: "Fredoka", sans-serif; font-weight: 700; font-size: 16px; min-width: 44px; height: 40px; padding: 0 12px; border: 2px solid var(--ink); border-radius: 9px; background: #fff; cursor: pointer; box-shadow: 0 2px 0 var(--ink); }
+.grid { display: grid; grid-template-columns: minmax(0, 1fr) 370px; gap: 16px; align-items: start; margin-top: 8px; }
+#panelbox { overflow: auto; }
+#panelscale { transform-origin: top left; width: 100%; }
+.side { min-width: 0; }
+@media (max-width: 940px) { .grid { grid-template-columns: 1fr; } }
+h1 { font-family: "Fredoka", sans-serif; font-weight: 700; font-size: 24px; margin: 2px 0; }
+.sub { color: var(--ink2); margin: 0 0 6px; font-size: 15px; }
 svg text { font-family: "Atkinson Hyperlegible", sans-serif; }
 svg .f { font-family: "Fredoka", sans-serif; font-weight: 700; }
 .panel { user-select: none; -webkit-user-select: none; }
 .panel .ctl { cursor: pointer; }
 .panel .ctl:hover { opacity: 0.82; }
-#hl-ring { pointer-events: none; animation: dash 1s linear infinite; }
+#hl-ring { pointer-events: none; animation: dash 0.8s linear infinite; }
+svg.dimmed .ctl { opacity: 0.3; transition: opacity 0.2s; }
+svg.dimmed .ctl.hl { opacity: 1; animation: pulse 0.9s ease-in-out infinite; }
+@keyframes pulse { 50% { opacity: 0.55; } }
 @keyframes dash { to { stroke-dashoffset: -28; } }
-.tabs { display: flex; gap: 8px; flex-wrap: wrap; margin: 16px 0 10px; }
+.tabs { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 10px; }
 .tab { font-family: "Fredoka", sans-serif; font-weight: 600; font-size: 15px; padding: 8px 14px; border: 2px solid var(--ink); border-radius: 9px; background: #fff; cursor: pointer; box-shadow: 0 2px 0 var(--ink); }
 .tab.on { background: var(--ink); color: #fff; }
-.card { border: 2.5px solid var(--ink); border-radius: 12px; padding: 14px 18px; min-height: 108px; }
+.card { border: 2.5px solid var(--ink); border-radius: 12px; padding: 14px 18px; min-height: 180px; }
 .card h2 { font-family: "Fredoka", sans-serif; font-weight: 700; font-size: 19px; margin: 0 0 6px; }
 .card p { margin: 0 0 8px; }
 .hear { font-size: 15px; color: var(--ink2); }
 .hear b { color: var(--ink); }
 .stepno { font-family: "Fredoka", sans-serif; font-weight: 600; font-size: 13px; letter-spacing: 1px; text-transform: uppercase; color: var(--ink2); }
 .nextbtn { font-family: "Fredoka", sans-serif; font-weight: 700; font-size: 16px; padding: 9px 16px; border: 2px solid var(--ink); border-radius: 9px; background: #fff; cursor: pointer; box-shadow: 0 2px 0 var(--ink); margin-top: 4px; }
-footer { margin-top: 26px; padding-top: 12px; border-top: 2px solid var(--ink); font-size: 14px; color: var(--ink2); display: flex; gap: 14px; flex-wrap: wrap; }
+footer { margin-top: 16px; padding-top: 12px; border-top: 2px solid var(--ink); font-size: 14px; color: var(--ink2); display: flex; gap: 14px; flex-wrap: wrap; }
 footer a { color: var(--ink); }
 @media (max-width: 520px) { body { font-size: 16px; } h1 { font-size: 24px; } }
 </style>
 </head><body>
 <div class="wrap">
-  <h1>FM-1 Follow-Along</h1>
-  <p class="sub">A clickable M-VAVE FM-1 pocket synthesizer. Click the panel — it makes real sound. Pick a lesson and follow the dashed ring.</p>
-  <div class="panel" id="panel">{{PANEL}}</div>
+  <div class="top">
+    <h1>FM-1 Follow-Along</h1>
+    <div class="tools">
+      <button id="zout" title="Zoom out" aria-label="Zoom out">&#8722;</button>
+      <button id="zin" title="Zoom in" aria-label="Zoom in">+</button>
+      <button id="fs" title="Full screen" aria-label="Full screen">&#x26F6; Full screen</button>
+    </div>
+  </div>
+  <p class="sub">A clickable M-VAVE FM-1. It makes real sound — pick a lesson and follow the glowing control.</p>
+  <div class="grid">
+  <div id="panelbox"><div id="panelscale"><div class="panel" id="panel">{{PANEL}}</div></div></div>
+  <div class="side">
   <div class="tabs" id="tabs">
     <button class="tab on" data-mode="-1">Explore</button>
     <button class="tab" data-mode="0">Lesson 1 · First sounds</button>
@@ -53,6 +73,7 @@ footer a { color: var(--ink); }
     <p>Every control answers with what it does, in plain words. The keys play real notes. Sound starts after your first click (the browser asks it that way). Turn your volume to a nice level first.</p>
     <p class="hear">This is a companion to the <a href="{{PAGES}}">FM-1 Easy Guide</a> — a free, printable, plain-words guide to the real device.</p>
   </div>
+  </div></div>
   <footer>
     <span>FM-1 Follow-Along · v{{VERSION}}</span>
     <a href="{{PAGES}}">Project page</a>
@@ -236,20 +257,33 @@ const LESSONS = [
 ];
 let sub = 0;
 function lessonStep() { return state.mode >= 0 ? LESSONS[state.mode].steps[state.li] : null; }
+function clearHl() {
+  const svg = document.querySelector("#panel svg");
+  svg.classList.remove("dimmed");
+  svg.querySelectorAll(".ctl.hl").forEach(e => e.classList.remove("hl"));
+}
+function markHl(ids) {
+  const svg = document.querySelector("#panel svg");
+  svg.classList.add("dimmed");
+  ids.forEach(i => { const e = $(i); if (e) e.classList.add("hl"); });
+}
 function ringTo(target) {
   const ring = $("hl-ring");
+  clearHl();
   if (!target) { ring.style.display = "none"; return; }
   let el = null;
   if (target === "KEYS3" || target === "SEQ8") {
     ring.setAttribute("x", 26); ring.setAttribute("y", 252); ring.setAttribute("width", 708); ring.setAttribute("height", 180);
-    if (target === "SEQ8") { const el2 = $(BOOK_BEAT[sub]); if (el2) { const b = el2.getBBox(); ring.setAttribute("x", b.x - 7); ring.setAttribute("y", b.y - 7); ring.setAttribute("width", b.width + 14); ring.setAttribute("height", b.height + 14); } }
+    if (target === "SEQ8") { const el2 = $(BOOK_BEAT[sub]); markHl([BOOK_BEAT[sub]]); if (el2) { const b = el2.getBBox(); ring.setAttribute("x", b.x - 9); ring.setAttribute("y", b.y - 9); ring.setAttribute("width", b.width + 18); ring.setAttribute("height", b.height + 18); } }
+    else markHl(Array.from({ length: 16 }, (_, i) => "key-b" + (i + 1)));
     ring.style.display = ""; return;
   }
   el = $(target);
   if (!el) { ring.style.display = "none"; return; }
+  markHl([target]);
   const b = el.getBBox();
-  ring.setAttribute("x", b.x - 7); ring.setAttribute("y", b.y - 7);
-  ring.setAttribute("width", b.width + 14); ring.setAttribute("height", b.height + 14);
+  ring.setAttribute("x", b.x - 9); ring.setAttribute("y", b.y - 9);
+  ring.setAttribute("width", b.width + 18); ring.setAttribute("height", b.height + 18);
   ring.style.display = "";
 }
 function showCard(h, body, hear) {
@@ -360,7 +394,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const svg = document.querySelector("#panel svg");
   const ring = document.createElementNS("http://www.w3.org/2000/svg", "rect");
   ring.setAttribute("id", "hl-ring"); ring.setAttribute("rx", 12); ring.setAttribute("fill", "none");
-  ring.setAttribute("stroke", "#111"); ring.setAttribute("stroke-width", 4); ring.setAttribute("stroke-dasharray", "10 8");
+  ring.setAttribute("stroke", "#111"); ring.setAttribute("stroke-width", 7); ring.setAttribute("stroke-dasharray", "13 9");
   ring.style.display = "none"; svg.appendChild(ring);
   svg.addEventListener("pointerdown", ev => {
     const g = ev.target.closest(".ctl"); if (!g) return;
@@ -371,6 +405,24 @@ document.addEventListener("DOMContentLoaded", () => {
     else if (state.mode === -1 && id.startsWith("key-b")) showCard(...CARDS.KEYBOT);
   });
   document.querySelectorAll(".tab").forEach(b => b.addEventListener("click", () => setMode(+b.dataset.mode)));
+  /* zoom + full screen */
+  let zoom = 1;
+  const box = $("panelbox"), zscale = $("panelscale");
+  function applyZoom() {
+    zscale.style.transform = zoom === 1 ? "" : "scale(" + zoom + ")";
+    box.style.height = zoom <= 1 ? "" : zscale.getBoundingClientRect().height + "px";
+  }
+  $("zin").addEventListener("click", () => { zoom = Math.min(2, zoom + 0.15); applyZoom(); });
+  $("zout").addEventListener("click", () => { zoom = Math.max(0.55, zoom - 0.15); applyZoom(); });
+  window.addEventListener("resize", applyZoom);
+  const fsBtn = $("fs");
+  fsBtn.addEventListener("click", () => {
+    if (document.fullscreenElement) document.exitFullscreen();
+    else if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
+  });
+  document.addEventListener("fullscreenchange", () => {
+    fsBtn.textContent = document.fullscreenElement ? "\u2715 Exit full screen" : "\u26F6 Full screen";
+  });
   seqLights();
 });
 </script>
