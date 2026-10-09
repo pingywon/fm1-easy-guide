@@ -1,0 +1,266 @@
+@import url("fonts/fonts.css");
+
+:root {
+  --ink: #111;
+  --ink-2: #3a3a3a;
+  --ink-3: #6b6b6b;
+  --line: #bdbdbd;
+  --fill: #efefef;
+  --fill-2: #e2e2e2;
+  --paper: #fff;
+}
+
+@page {
+  size: Letter;
+  margin: 0.6in 0.7in 0.65in 0.7in;
+  @bottom-center {
+    content: "M-VAVE FM-1  ·  Easy Guide  ·  page " counter(page);
+    font-family: "Atkinson Hyperlegible", sans-serif;
+    font-size: 8.5pt;
+    color: #6b6b6b;
+  }
+}
+@page cover {
+  margin: 0.5in;
+  @bottom-center { content: none; }
+}
+
+* { box-sizing: border-box; }
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Atkinson Hyperlegible", "DejaVu Sans", sans-serif;
+  font-size: 12.5pt;
+  line-height: 1.45;
+}
+
+.page { break-after: page; }
+.page:last-child { break-after: auto; }
+.page > :last-child, .page > :last-child > .box { margin-bottom: 0 !important; }
+.keep { break-inside: avoid; }
+
+h1, h2, h3, h4, .display {
+  font-family: "Fredoka", "URW Gothic", sans-serif;
+  font-weight: 600;
+  line-height: 1.12;
+  margin: 0;
+}
+h1 { font-size: 30pt; letter-spacing: -0.3pt; }
+h2 { font-size: 22pt; margin-bottom: 3pt; }
+h3 { font-size: 14.5pt; margin: 14pt 0 5pt; }
+h4 { font-size: 12.5pt; margin: 8pt 0 2pt; }
+p { margin: 0 0 9pt; }
+ul, ol { margin: 0 0 7pt; padding-left: 18pt; }
+li { margin-bottom: 5pt; }
+b, strong { font-weight: 700; }
+small, .small { font-size: 10.2pt; color: var(--ink-2); }
+.muted { color: var(--ink-3); }
+
+/* ---------- page header band ---------- */
+.band {
+  display: flex; align-items: center; gap: 12pt;
+  border-bottom: 3pt solid var(--ink);
+  padding-bottom: 6pt; margin-bottom: 12pt;
+}
+.band .tag {
+  font-family: "Fredoka", sans-serif; font-weight: 700;
+  font-size: 10pt; letter-spacing: 1.2pt; text-transform: uppercase;
+  background: var(--ink); color: #fff;
+  padding: 3pt 8pt; border-radius: 4pt; white-space: nowrap;
+}
+.band h2 { margin: 0; }
+.lede { font-size: 13.4pt; color: var(--ink-2); margin-bottom: 12pt; }
+
+/* ---------- device controls as they look on the box ---------- */
+.btn {
+  display: inline-block;
+  font-family: "Fredoka", sans-serif; font-weight: 700;
+  font-size: 0.8em; letter-spacing: 0.4pt; text-transform: uppercase;
+  line-height: 1; white-space: nowrap;
+  padding: 2.5pt 5pt 2pt;
+  border: 1.6pt solid var(--ink);
+  border-radius: 4pt;
+  box-shadow: 0 1.6pt 0 var(--ink);
+  background: #fff;
+  vertical-align: 1pt;
+  margin: 0 1pt 1.6pt;
+}
+.knob {
+  display: inline-block;
+  font-family: "Fredoka", sans-serif; font-weight: 700;
+  font-size: 0.8em; letter-spacing: 0.4pt; text-transform: uppercase;
+  line-height: 1; white-space: nowrap;
+  padding: 2.5pt 6pt 2pt 17pt;
+  border: 1.6pt solid var(--ink);
+  border-radius: 20pt;
+  background: #fff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'><circle cx='10' cy='10' r='8' fill='%23e2e2e2' stroke='%23111' stroke-width='2'/><line x1='10' y1='10' x2='10' y2='3.5' stroke='%23111' stroke-width='2.4' stroke-linecap='round'/></svg>") no-repeat 3pt center / 11pt 11pt;
+  vertical-align: 1pt;
+  margin: 0 1pt;
+}
+.key {
+  display: inline-block;
+  font-family: "Fredoka", sans-serif; font-weight: 600;
+  font-size: 0.8em; line-height: 1; white-space: nowrap;
+  padding: 2.5pt 5pt 2pt;
+  border: 1.4pt solid var(--ink);
+  border-radius: 1pt 1pt 5pt 5pt;
+  background: #fff;
+  vertical-align: 1pt;
+}
+.scr {
+  font-family: "JetBrains Mono", "DejaVu Sans Mono", monospace;
+  font-size: 0.86em; font-weight: 700;
+  background: var(--ink); color: #fff;
+  padding: 1pt 4pt; border-radius: 3pt;
+  white-space: nowrap;
+}
+
+/* ---------- step lists with tick boxes ---------- */
+ol.steps { list-style: none; padding: 0; margin: 4pt 0 9pt; counter-reset: s; }
+ol.steps > li {
+  counter-increment: s;
+  position: relative;
+  padding: 6pt 0 6pt 48pt;
+  min-height: 26pt;
+  border-bottom: 0.8pt dotted var(--line);
+  margin: 0;
+  break-inside: avoid;
+}
+ol.steps > li:last-child { border-bottom: none; }
+ol.steps > li::before {
+  content: counter(s);
+  position: absolute; left: 0; top: 5.5pt;
+  width: 19pt; height: 19pt; border-radius: 50%;
+  background: var(--ink); color: #fff;
+  font-family: "Fredoka", sans-serif; font-weight: 700; font-size: 11pt;
+  display: flex; align-items: center; justify-content: center;
+}
+ol.steps > li::after {
+  content: "";
+  position: absolute; left: 26pt; top: 7.5pt;
+  width: 12pt; height: 12pt;
+  border: 1.5pt solid var(--ink); border-radius: 2pt;
+}
+ol.steps .hear { display: block; font-size: 11pt; color: var(--ink-2); margin-top: 1pt; }
+ol.steps .hear::before { content: "You should hear/see: "; font-weight: 700; }
+
+/* ---------- callout boxes ---------- */
+.box { border-radius: 7pt; padding: 8pt 12pt 6pt; margin: 12pt 0; break-inside: avoid; }
+.box > .lbl {
+  display: inline-flex; align-items: center; gap: 5pt;
+  font-family: "Fredoka", sans-serif; font-weight: 700;
+  font-size: 9.6pt; letter-spacing: 1pt; text-transform: uppercase;
+  margin-bottom: 3pt;
+}
+.box > .lbl svg { width: 13pt; height: 13pt; }
+.box p:last-child, .box ul:last-child, .box ol:last-child { margin-bottom: 2pt; }
+.try   { border: 1.6pt dashed var(--ink); }
+.trap  { border: 1.6pt solid var(--ink); border-left-width: 7pt; background: var(--fill); }
+.check { border: 1.4pt solid var(--ink-3); background: repeating-linear-gradient(135deg, #fff 0 6pt, #f4f4f4 6pt 12pt); }
+.why   { background: var(--fill); }
+.big-idea { border: 2.4pt solid var(--ink); border-radius: 10pt; padding: 10pt 13pt; }
+
+/* ---------- layout helpers ---------- */
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 12pt; }
+.two-l { display: grid; grid-template-columns: 1.25fr 1fr; gap: 14pt; align-items: start; }
+.three { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10pt; }
+.center { text-align: center; }
+figure { margin: 4pt 0 6pt; break-inside: avoid; }
+figcaption { font-size: 10pt; color: var(--ink-2); text-align: center; margin-top: 3pt; }
+svg text { font-family: "Atkinson Hyperlegible", sans-serif; }
+svg .f { font-family: "Fredoka", sans-serif; font-weight: 700; }
+
+/* ---------- tables ---------- */
+table { border-collapse: collapse; width: 100%; margin: 4pt 0 10pt; font-size: 11.6pt; }
+th, td { border: 1pt solid var(--ink); padding: 5pt 7pt; vertical-align: top; text-align: left; }
+th { background: var(--fill-2); font-family: "Fredoka", sans-serif; font-weight: 600; }
+tr { break-inside: avoid; }
+td.c, th.c { text-align: center; }
+table.plain td, table.plain th { border: none; border-bottom: 0.8pt solid var(--line); padding: 4pt 4pt; }
+
+/* ---------- control reference cards ---------- */
+.card {
+  border: 1.6pt solid var(--ink); border-radius: 8pt;
+  padding: 5pt 8pt 4pt; margin-bottom: 6pt; break-inside: avoid;
+}
+.card .hd { display: flex; align-items: baseline; gap: 6pt; flex-wrap: wrap; margin-bottom: 2pt; }
+.card .hd .num {
+  font-family: "Fredoka", sans-serif; font-weight: 700; font-size: 10pt;
+  width: 18pt; height: 18pt; border-radius: 50%;
+  border: 1.6pt solid var(--ink);
+  display: inline-flex; align-items: center; justify-content: center;
+  flex: none; position: relative; top: -1pt;
+}
+.card .hd .what { font-size: 10.8pt; color: var(--ink-2); }
+.card p { margin-bottom: 3pt; font-size: 10.6pt; line-height: 1.28; }
+.card .try-line { font-size: 10pt; border-top: 0.8pt dotted var(--line); padding-top: 3pt; }
+.card .try-line::before { content: "TRY: "; font-family: "Fredoka", sans-serif; font-weight: 700; letter-spacing: 0.6pt; }
+.grid-cards { column-count: 2; column-gap: 12pt; }
+.grid-cards .card { display: inline-block; width: 100%; }
+
+/* ---------- beat grid ---------- */
+.beat { margin: 6pt 0 8pt; break-inside: avoid; }
+.beat .counts, .beat .cells { display: grid; grid-template-columns: repeat(16, 1fr); gap: 2.5pt; }
+.beat .counts div {
+  text-align: center; font-family: "Fredoka", sans-serif; font-weight: 600;
+  font-size: 9.4pt; color: var(--ink-3); padding-bottom: 2pt;
+}
+.beat .counts div.on { color: var(--ink); font-size: 11.5pt; }
+.beat .cells div {
+  aspect-ratio: 1 / 1.05;
+  border: 1.4pt solid var(--ink); border-radius: 4pt;
+  display: flex; align-items: center; justify-content: center;
+  font-family: "Fredoka", sans-serif; font-weight: 700; font-size: 10.5pt;
+  position: relative; background: #fff;
+}
+.beat .cells div:nth-child(4n+1) { border-width: 2.4pt; }
+.beat .cells .B { background: var(--ink); color: #fff; }
+.beat .cells .S { background: repeating-linear-gradient(45deg, #fff 0 2.5pt, #9a9a9a 2.5pt 4pt); color: var(--ink); }
+.beat .cells .S span { background: #fff; padding: 0 2pt; border-radius: 2pt; }
+.beat .cells .t { background: #fff; }
+.beat .cells .r { background: #fff; color: #bdbdbd; border-style: dashed; }
+.beat .cells .n { background: var(--fill-2); }
+.beat .stepno { display: grid; grid-template-columns: repeat(16, 1fr); gap: 2.5pt; }
+.beat .stepno div { text-align: center; font-size: 7.6pt; color: var(--ink-3); padding-top: 1.5pt; }
+.legend { display: flex; flex-wrap: wrap; gap: 6pt 14pt; font-size: 10.6pt; margin: 3pt 0 6pt; }
+.sw {
+  display: inline-flex; width: 16pt; height: 16pt; border: 1.4pt solid var(--ink); border-radius: 3pt;
+  align-items: center; justify-content: center; vertical-align: -4pt; margin-right: 4pt;
+  font-family: "Fredoka", sans-serif; font-weight: 700; font-size: 9pt;
+}
+
+.settings { border: 1.6pt solid var(--ink); border-radius: 7pt; overflow: hidden; margin: 6pt 0 8pt; break-inside: avoid; }
+.settings .sh .btn { color: var(--ink); }
+.settings .sh { background: var(--ink); color: #fff; font-family: "Fredoka", sans-serif; font-weight: 600; padding: 3pt 9pt; font-size: 11pt; }
+.settings table { margin: 0; font-size: 11pt; }
+.settings td, .settings th { border: none; border-bottom: 0.8pt solid var(--line); }
+.settings tr:last-child td { border-bottom: none; }
+
+.gauge { display: inline-flex; gap: 1.2pt; vertical-align: -1pt; margin-right: 3pt; }
+.gauge i { display: inline-block; width: 4pt; border: 0.9pt solid var(--ink); }
+.gauge i:nth-child(1) { height: 5pt; margin-top: 6pt; }
+.gauge i:nth-child(2) { height: 7.5pt; margin-top: 3.5pt; }
+.gauge i:nth-child(3) { height: 9pt; margin-top: 2pt; }
+.gauge i:nth-child(4) { height: 11pt; margin-top: 0; }
+.gauge i.on { background: var(--ink); }
+
+.toc { columns: 2; column-gap: 18pt; font-size: 11.6pt; }
+.toc div { break-inside: avoid; padding: 2.5pt 0; border-bottom: 0.8pt dotted var(--line); display: flex; justify-content: space-between; gap: 6pt; }
+.toc .sec { font-family: "Fredoka", sans-serif; font-weight: 600; border-bottom: none; padding-top: 8pt; }
+
+.write-line { border-bottom: 1pt solid var(--ink-3); height: 22pt; }
+.tight td, .tight th { padding-top: 2pt !important; padding-bottom: 2pt !important; }
+.beat .press { display: grid; gap: 2.5pt; margin-top: 3pt; }
+.beat .press div { text-align: center; font-family: "Fredoka", sans-serif; font-weight: 700; font-size: 9.6pt; border-top: 1.4pt solid #111; padding-top: 2pt; }
+.beat .press div.gap { color: #6b6b6b; font-weight: 600; border-top-style: dashed; }
+.press-lbl { font-family: "Fredoka", sans-serif; font-weight: 700; font-size: 9.5pt; letter-spacing: 0.8pt; text-transform: uppercase; margin: 2pt 0 0; }
+.beat.eight { width: 58%; margin-left: auto; margin-right: auto; }
+
+/* ---------- v2: plain setting lists ---------- */
+ul.set { list-style: none; padding: 0; margin: 4pt 0 10pt; }
+ul.set li { padding: 3pt 0; border-bottom: 0.8pt dotted var(--line); margin: 0; }
+ul.set li:last-child { border-bottom: none; }
+ul.set b.v { font-family: "Fredoka", sans-serif; font-weight: 600; }
+.small, small { font-size: 11pt; }

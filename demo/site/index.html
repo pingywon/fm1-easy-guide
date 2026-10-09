@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>FM-1 Follow-Along</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23111'/%3E%3Ccircle cx='12' cy='22' r='5' fill='%23fff'/%3E%3Crect x='15' y='6' width='3' height='16' fill='%23fff'/%3E%3C/svg%3E">
+<style>
+@font-face { font-family: "Fredoka"; src: url(fonts/Fredoka-600-normal.woff2) format("woff2"); font-weight: 600; }
+@font-face { font-family: "Fredoka"; src: url(fonts/Fredoka-700-normal.woff2) format("woff2"); font-weight: 700; }
+@font-face { font-family: "Atkinson Hyperlegible"; src: url(fonts/AtkinsonHyperlegible-400-normal.woff2) format("woff2"); font-weight: 400; }
+@font-face { font-family: "Atkinson Hyperlegible"; src: url(fonts/AtkinsonHyperlegible-700-normal.woff2) format("woff2"); font-weight: 700; }
+:root { --ink: #111; --ink2: #3a3a3a; --fill: #efefef; }
+* { box-sizing: border-box; }
+body { margin: 0; background: #fff; color: var(--ink); font-family: "Atkinson Hyperlegible", sans-serif; font-size: 17px; line-height: 1.45; }
+.wrap { max-width: 880px; margin: 0 auto; padding: 18px 16px 40px; }
+h1 { font-family: "Fredoka", sans-serif; font-weight: 700; font-size: 30px; margin: 4px 0 2px; }
+.sub { color: var(--ink2); margin: 0 0 14px; }
+svg text { font-family: "Atkinson Hyperlegible", sans-serif; }
+svg .f { font-family: "Fredoka", sans-serif; font-weight: 700; }
+.panel { user-select: none; -webkit-user-select: none; }
+.panel .ctl { cursor: pointer; }
+.panel .ctl:hover { opacity: 0.82; }
+#hl-ring { pointer-events: none; animation: dash 1s linear infinite; }
+@keyframes dash { to { stroke-dashoffset: -28; } }
+.tabs { display: flex; gap: 8px; flex-wrap: wrap; margin: 16px 0 10px; }
+.tab { font-family: "Fredoka", sans-serif; font-weight: 600; font-size: 15px; padding: 8px 14px; border: 2px solid var(--ink); border-radius: 9px; background: #fff; cursor: pointer; box-shadow: 0 2px 0 var(--ink); }
+.tab.on { background: var(--ink); color: #fff; }
+.card { border: 2.5px solid var(--ink); border-radius: 12px; padding: 14px 18px; min-height: 108px; }
+.card h2 { font-family: "Fredoka", sans-serif; font-weight: 700; font-size: 19px; margin: 0 0 6px; }
+.card p { margin: 0 0 8px; }
+.hear { font-size: 15px; color: var(--ink2); }
+.hear b { color: var(--ink); }
+.stepno { font-family: "Fredoka", sans-serif; font-weight: 600; font-size: 13px; letter-spacing: 1px; text-transform: uppercase; color: var(--ink2); }
+.nextbtn { font-family: "Fredoka", sans-serif; font-weight: 700; font-size: 16px; padding: 9px 16px; border: 2px solid var(--ink); border-radius: 9px; background: #fff; cursor: pointer; box-shadow: 0 2px 0 var(--ink); margin-top: 4px; }
+footer { margin-top: 26px; padding-top: 12px; border-top: 2px solid var(--ink); font-size: 14px; color: var(--ink2); display: flex; gap: 14px; flex-wrap: wrap; }
+footer a { color: var(--ink); }
+@media (max-width: 520px) { body { font-size: 16px; } h1 { font-size: 24px; } }
+</style>
+</head><body>
+<div class="wrap">
+  <h1>FM-1 Follow-Along</h1>
+  <p class="sub">A clickable M-VAVE FM-1 pocket synthesizer. Click the panel — it makes real sound. Pick a lesson and follow the dashed ring.</p>
+  <div class="panel" id="panel"><svg viewBox="0 0 760 450" style="width:100%"><rect x="2" y="2" width="756" height="446" rx="32" fill="#fff" stroke="#111" stroke-width="4"/><g id="ctl-master" class="ctl" data-ctl="ctl-master"><text x="70" y="45" text-anchor="middle" font-size="12" class="f">MASTER</text><circle cx="70" cy="72" r="18" fill="#e2e2e2" stroke="#111" stroke-width="3"/><line id="ctl-master-ptr" style="transform-origin:70px 72px" x1="70" y1="72" x2="70" y2="58" stroke="#111" stroke-width="3" stroke-linecap="round"/></g><g id="ctl-select" class="ctl" data-ctl="ctl-select"><text x="152" y="45" text-anchor="middle" font-size="12" class="f">SELECT</text><circle cx="152" cy="72" r="18" fill="#e2e2e2" stroke="#111" stroke-width="3"/><line id="ctl-select-ptr" style="transform-origin:152px 72px" x1="152" y1="72" x2="152" y2="58" stroke="#111" stroke-width="3" stroke-linecap="round"/></g><g id="ctl-presets" class="ctl" data-ctl="ctl-presets"><text x="70" y="125" text-anchor="middle" font-size="12" class="f">PRESETS</text><circle cx="70" cy="152" r="18" fill="#e2e2e2" stroke="#111" stroke-width="3"/><line id="ctl-presets-ptr" style="transform-origin:70px 152px" x1="70" y1="152" x2="70" y2="138" stroke="#111" stroke-width="3" stroke-linecap="round"/></g><g id="ctl-algorithm" class="ctl" data-ctl="ctl-algorithm"><text x="152" y="125" text-anchor="middle" font-size="12" class="f">ALGORITHM</text><circle cx="152" cy="152" r="18" fill="#e2e2e2" stroke="#111" stroke-width="3"/><line id="ctl-algorithm-ptr" style="transform-origin:152px 152px" x1="152" y1="152" x2="152" y2="138" stroke="#111" stroke-width="3" stroke-linecap="round"/></g><rect x="36" y="192" width="152" height="40" rx="10" fill="none" stroke="#111" stroke-width="2"/><g id="btn-octdown" class="ctl" data-ctl="btn-octdown"><rect x="46" y="200" width="56" height="24" rx="6" fill="#fff" stroke="#111" stroke-width="2.5"/><text x="74" y="216.5" text-anchor="middle" font-size="12" class="f">OCT−</text></g><g id="btn-octup" class="ctl" data-ctl="btn-octup"><rect x="122" y="200" width="56" height="24" rx="6" fill="#fff" stroke="#111" stroke-width="2.5"/><text x="150" y="216.5" text-anchor="middle" font-size="12" class="f">OCT+</text></g><rect x="212" y="30" width="176" height="200" rx="20" fill="#111"/><rect x="226" y="46" width="148" height="160" rx="6" fill="#fff"/><text id="scr-top" x="236" y="66" font-size="12" class="f">001 PIANO 1</text><path id="scr-wave" d="M236 130 C 256 90, 272 90, 290 130 S 322 170, 340 130 S 358 104, 366 118" fill="none" stroke="#111" stroke-width="3"/><text id="scr-mid" x="300" y="128" text-anchor="middle" font-size="15" class="f"></text><text id="scr-mid2" x="300" y="150" text-anchor="middle" font-size="11"></text><rect x="236" y="182" width="128" height="16" rx="3" fill="#e2e2e2"/><text id="scr-bot" x="240" y="194" font-size="10" class="f"></text><g id="ctl-knob1" class="ctl" data-ctl="ctl-knob1"><text x="448" y="45" text-anchor="middle" font-size="12" class="f">KNOB1</text><circle cx="448" cy="72" r="17" fill="#e2e2e2" stroke="#111" stroke-width="3"/><line id="ctl-knob1-ptr" style="transform-origin:448px 72px" x1="448" y1="72" x2="448" y2="59" stroke="#111" stroke-width="3" stroke-linecap="round"/></g><g id="ctl-knob2" class="ctl" data-ctl="ctl-knob2"><text x="536" y="45" text-anchor="middle" font-size="12" class="f">KNOB2</text><circle cx="536" cy="72" r="17" fill="#e2e2e2" stroke="#111" stroke-width="3"/><line id="ctl-knob2-ptr" style="transform-origin:536px 72px" x1="536" y1="72" x2="536" y2="59" stroke="#111" stroke-width="3" stroke-linecap="round"/></g><g id="ctl-knob3" class="ctl" data-ctl="ctl-knob3"><text x="624" y="45" text-anchor="middle" font-size="12" class="f">KNOB3</text><circle cx="624" cy="72" r="17" fill="#e2e2e2" stroke="#111" stroke-width="3"/><line id="ctl-knob3-ptr" style="transform-origin:624px 72px" x1="624" y1="72" x2="624" y2="59" stroke="#111" stroke-width="3" stroke-linecap="round"/></g><g id="ctl-knob4" class="ctl" data-ctl="ctl-knob4"><text x="712" y="45" text-anchor="middle" font-size="12" class="f">KNOB4</text><circle cx="712" cy="72" r="17" fill="#e2e2e2" stroke="#111" stroke-width="3"/><line id="ctl-knob4-ptr" style="transform-origin:712px 72px" x1="712" y1="72" x2="712" y2="59" stroke="#111" stroke-width="3" stroke-linecap="round"/></g><rect x="414" y="116" width="324" height="116" rx="14" fill="none" stroke="#111" stroke-width="2"/><g id="btn-fx" class="ctl" data-ctl="btn-fx"><rect x="428.0" y="128" width="44" height="38" rx="7" fill="#fff" stroke="#111" stroke-width="2.5"/><text x="450.0" y="151.5" text-anchor="middle" font-size="11" class="f">FX</text><circle id="btn-fx-led" class="led" cx="465.0" cy="134.5" r="3.2" fill="#fff" stroke="#111" stroke-width="1.2"/></g><g id="btn-sel" class="ctl" data-ctl="btn-sel"><rect x="479.5" y="128" width="44" height="38" rx="7" fill="#fff" stroke="#111" stroke-width="2.5"/><text x="501.5" y="151.5" text-anchor="middle" font-size="11" class="f">SEL</text><circle id="btn-sel-led" class="led" cx="516.5" cy="134.5" r="3.2" fill="#fff" stroke="#111" stroke-width="1.2"/></g><g id="btn-env" class="ctl" data-ctl="btn-env"><rect x="531.0" y="128" width="44" height="38" rx="7" fill="#fff" stroke="#111" stroke-width="2.5"/><text x="553.0" y="151.5" text-anchor="middle" font-size="11" class="f">ENV</text><circle id="btn-env-led" class="led" cx="568.0" cy="134.5" r="3.2" fill="#fff" stroke="#111" stroke-width="1.2"/></g><g id="btn-lfo" class="ctl" data-ctl="btn-lfo"><rect x="582.5" y="128" width="44" height="38" rx="7" fill="#fff" stroke="#111" stroke-width="2.5"/><text x="604.5" y="151.5" text-anchor="middle" font-size="11" class="f">LFO</text><circle id="btn-lfo-led" class="led" cx="619.5" cy="134.5" r="3.2" fill="#fff" stroke="#111" stroke-width="1.2"/></g><g id="btn-edit" class="ctl" data-ctl="btn-edit"><rect x="634.0" y="128" width="44" height="38" rx="7" fill="#fff" stroke="#111" stroke-width="2.5"/><text x="656.0" y="151.5" text-anchor="middle" font-size="10" class="f">EDIT</text><circle id="btn-edit-led" class="led" cx="671.0" cy="134.5" r="3.2" fill="#fff" stroke="#111" stroke-width="1.2"/></g><g id="btn-glo" class="ctl" data-ctl="btn-glo"><rect x="685.5" y="128" width="44" height="38" rx="7" fill="#fff" stroke="#111" stroke-width="2.5"/><text x="707.5" y="151.5" text-anchor="middle" font-size="11" class="f">GLO</text><circle id="btn-glo-led" class="led" cx="722.5" cy="134.5" r="3.2" fill="#fff" stroke="#111" stroke-width="1.2"/></g><g id="btn-home" class="ctl" data-ctl="btn-home"><rect x="428.0" y="178" width="44" height="38" rx="7" fill="#fff" stroke="#111" stroke-width="2.5"/><text x="450.0" y="201.5" text-anchor="middle" font-size="10" class="f">HOME</text><circle id="btn-home-led" class="led" cx="465.0" cy="184.5" r="3.2" fill="#fff" stroke="#111" stroke-width="1.2"/></g><g id="btn-save" class="ctl" data-ctl="btn-save"><rect x="479.5" y="178" width="44" height="38" rx="7" fill="#fff" stroke="#111" stroke-width="2.5"/><text x="501.5" y="201.5" text-anchor="middle" font-size="10" class="f">SAVE</text><circle id="btn-save-led" class="led" cx="516.5" cy="184.5" r="3.2" fill="#fff" stroke="#111" stroke-width="1.2"/></g><g id="btn-arp" class="ctl" data-ctl="btn-arp"><rect x="531.0" y="178" width="44" height="38" rx="7" fill="#fff" stroke="#111" stroke-width="2.5"/><text x="553.0" y="201.5" text-anchor="middle" font-size="11" class="f">ARP</text><circle id="btn-arp-led" class="led" cx="568.0" cy="184.5" r="3.2" fill="#fff" stroke="#111" stroke-width="1.2"/></g><g id="btn-seq" class="ctl" data-ctl="btn-seq"><rect x="582.5" y="178" width="44" height="38" rx="7" fill="#fff" stroke="#111" stroke-width="2.5"/><text x="604.5" y="201.5" text-anchor="middle" font-size="11" class="f">SEQ</text><circle id="btn-seq-led" class="led" cx="619.5" cy="184.5" r="3.2" fill="#fff" stroke="#111" stroke-width="1.2"/></g><g id="btn-play" class="ctl" data-ctl="btn-play"><rect x="634.0" y="178" width="44" height="38" rx="7" fill="#fff" stroke="#111" stroke-width="2.5"/><text x="656.0" y="195" text-anchor="middle" font-size="9.5" class="f">PLAY</text><text x="656.0" y="207" text-anchor="middle" font-size="9.5" class="f">STOP</text><circle id="btn-play-led" class="led" cx="671.0" cy="184.5" r="3.2" fill="#fff" stroke="#111" stroke-width="1.2"/></g><g id="btn-rec" class="ctl" data-ctl="btn-rec"><rect x="685.5" y="178" width="44" height="38" rx="7" fill="#fff" stroke="#111" stroke-width="2.5"/><text x="707.5" y="201.5" text-anchor="middle" font-size="11" class="f">REC</text><circle id="btn-rec-led" class="led" cx="722.5" cy="184.5" r="3.2" fill="#fff" stroke="#111" stroke-width="1.2"/></g><rect x="26" y="252" width="708" height="180" rx="26" fill="#111"/><g id="key-t1" class="ctl" data-ctl="key-t1"><rect x="65.6" y="266" width="30" height="54" rx="15" fill="#fff" stroke="#111" stroke-width="2"/><rect x="78.6" y="278" width="4" height="30" rx="2" fill="#9a9a9a"/><text x="80.6" y="336" text-anchor="middle" font-size="9.5" fill="#fff">OP1</text></g><g id="key-t2" class="ctl" data-ctl="key-t2"><rect x="108.80000000000001" y="266" width="30" height="54" rx="15" fill="#fff" stroke="#111" stroke-width="2"/><rect x="121.80000000000001" y="278" width="4" height="30" rx="2" fill="#9a9a9a"/><text x="123.80000000000001" y="336" text-anchor="middle" font-size="9.5" fill="#fff">OP2</text></g><g id="key-t3" class="ctl" data-ctl="key-t3"><rect x="152.0" y="266" width="30" height="54" rx="15" fill="#fff" stroke="#111" stroke-width="2"/><rect x="165.0" y="278" width="4" height="30" rx="2" fill="#9a9a9a"/><text x="167.0" y="336" text-anchor="middle" font-size="9.5" fill="#fff">OP3</text></g><g id="key-t4" class="ctl" data-ctl="key-t4"><rect x="238.4" y="266" width="30" height="54" rx="15" fill="#fff" stroke="#111" stroke-width="2"/><rect x="251.4" y="278" width="4" height="30" rx="2" fill="#9a9a9a"/><text x="253.4" y="336" text-anchor="middle" font-size="9.5" fill="#fff">OP4</text></g><g id="key-t5" class="ctl" data-ctl="key-t5"><rect x="281.6" y="266" width="30" height="54" rx="15" fill="#fff" stroke="#111" stroke-width="2"/><rect x="294.6" y="278" width="4" height="30" rx="2" fill="#9a9a9a"/><text x="296.6" y="336" text-anchor="middle" font-size="9.5" fill="#fff">OP5</text></g><g id="key-t6" class="ctl" data-ctl="key-t6"><rect x="368.0" y="266" width="30" height="54" rx="15" fill="#fff" stroke="#111" stroke-width="2"/><rect x="381.0" y="278" width="4" height="30" rx="2" fill="#9a9a9a"/><text x="383.0" y="336" text-anchor="middle" font-size="9.5" fill="#fff">OP6</text></g><g id="key-t7" class="ctl" data-ctl="key-t7"><rect x="411.20000000000005" y="266" width="30" height="54" rx="15" fill="#fff" stroke="#111" stroke-width="2"/><rect x="424.20000000000005" y="278" width="4" height="30" rx="2" fill="#9a9a9a"/><text x="426.20000000000005" y="336" text-anchor="middle" font-size="9.5" fill="#fff">PIT</text></g><g id="key-t8" class="ctl" data-ctl="key-t8"><rect x="454.40000000000003" y="266" width="30" height="54" rx="15" fill="#fff" stroke="#111" stroke-width="2"/><rect x="467.40000000000003" y="278" width="4" height="30" rx="2" fill="#9a9a9a"/><text x="469.40000000000003" y="336" text-anchor="middle" font-size="9.5" fill="#fff">GLO</text></g><g id="key-t9" class="ctl" data-ctl="key-t9"><rect x="540.8" y="266" width="30" height="54" rx="15" fill="#fff" stroke="#111" stroke-width="2"/><rect x="553.8" y="278" width="4" height="30" rx="2" fill="#9a9a9a"/><text x="555.8" y="336" text-anchor="middle" font-size="9.5" fill="#fff">MONO</text></g><g id="key-t10" class="ctl" data-ctl="key-t10"><rect x="584.0" y="266" width="30" height="54" rx="15" fill="#fff" stroke="#111" stroke-width="2"/><rect x="597.0" y="278" width="4" height="30" rx="2" fill="#9a9a9a"/><text x="599.0" y="336" text-anchor="middle" font-size="9.5" fill="#fff">POLY</text></g><g id="key-t11" class="ctl" data-ctl="key-t11"><rect x="670.4000000000001" y="266" width="30" height="54" rx="15" fill="#fff" stroke="#111" stroke-width="2"/><rect x="683.4000000000001" y="278" width="4" height="30" rx="2" fill="#9a9a9a"/></g><g id="key-b1" class="ctl" data-ctl="key-b1"><rect x="41.0" y="346" width="36" height="72" rx="18" fill="#fff" stroke="#111" stroke-width="2"/><rect id="kled-1" x="57.0" y="358" width="4" height="26" rx="2" fill="#9a9a9a"/><text x="59.0" y="409" text-anchor="middle" font-size="13" class="f">1</text></g><g id="key-b2" class="ctl" data-ctl="key-b2"><rect x="84.2" y="346" width="36" height="72" rx="18" fill="#fff" stroke="#111" stroke-width="2"/><rect id="kled-2" x="100.2" y="358" width="4" height="26" rx="2" fill="#9a9a9a"/><text x="102.2" y="409" text-anchor="middle" font-size="13" class="f">2</text></g><g id="key-b3" class="ctl" data-ctl="key-b3"><rect x="127.4" y="346" width="36" height="72" rx="18" fill="#fff" stroke="#111" stroke-width="2"/><rect id="kled-3" x="143.4" y="358" width="4" height="26" rx="2" fill="#9a9a9a"/><text x="145.4" y="409" text-anchor="middle" font-size="13" class="f">3</text></g><g id="key-b4" class="ctl" data-ctl="key-b4"><rect x="170.60000000000002" y="346" width="36" height="72" rx="18" fill="#fff" stroke="#111" stroke-width="2"/><rect id="kled-4" x="186.60000000000002" y="358" width="4" height="26" rx="2" fill="#9a9a9a"/><text x="188.60000000000002" y="409" text-anchor="middle" font-size="13" class="f">4</text></g><g id="key-b5" class="ctl" data-ctl="key-b5"><rect x="213.8" y="346" width="36" height="72" rx="18" fill="#fff" stroke="#111" stroke-width="2"/><rect id="kled-5" x="229.8" y="358" width="4" height="26" rx="2" fill="#9a9a9a"/><text x="231.8" y="409" text-anchor="middle" font-size="13" class="f">5</text></g><g id="key-b6" class="ctl" data-ctl="key-b6"><rect x="257.0" y="346" width="36" height="72" rx="18" fill="#fff" stroke="#111" stroke-width="2"/><rect id="kled-6" x="273.0" y="358" width="4" height="26" rx="2" fill="#9a9a9a"/><text x="275.0" y="409" text-anchor="middle" font-size="13" class="f">6</text></g><g id="key-b7" class="ctl" data-ctl="key-b7"><rect x="300.20000000000005" y="346" width="36" height="72" rx="18" fill="#fff" stroke="#111" stroke-width="2"/><rect id="kled-7" x="316.20000000000005" y="358" width="4" height="26" rx="2" fill="#9a9a9a"/><text x="318.20000000000005" y="409" text-anchor="middle" font-size="13" class="f">7</text></g><g id="key-b8" class="ctl" data-ctl="key-b8"><rect x="343.40000000000003" y="346" width="36" height="72" rx="18" fill="#fff" stroke="#111" stroke-width="2"/><rect id="kled-8" x="359.40000000000003" y="358" width="4" height="26" rx="2" fill="#9a9a9a"/><text x="361.40000000000003" y="409" text-anchor="middle" font-size="13" class="f">8</text></g><g id="key-b9" class="ctl" data-ctl="key-b9"><rect x="386.6" y="346" width="36" height="72" rx="18" fill="#fff" stroke="#111" stroke-width="2"/><rect id="kled-9" x="402.6" y="358" width="4" height="26" rx="2" fill="#9a9a9a"/><text x="404.6" y="409" text-anchor="middle" font-size="13" class="f">9</text></g><g id="key-b10" class="ctl" data-ctl="key-b10"><rect x="429.8" y="346" width="36" height="72" rx="18" fill="#fff" stroke="#111" stroke-width="2"/><rect id="kled-10" x="445.8" y="358" width="4" height="26" rx="2" fill="#9a9a9a"/><text x="447.8" y="409" text-anchor="middle" font-size="13" class="f">10</text></g><g id="key-b11" class="ctl" data-ctl="key-b11"><rect x="473.0" y="346" width="36" height="72" rx="18" fill="#fff" stroke="#111" stroke-width="2"/><rect id="kled-11" x="489.0" y="358" width="4" height="26" rx="2" fill="#9a9a9a"/><text x="491.0" y="409" text-anchor="middle" font-size="13" class="f">11</text></g><g id="key-b12" class="ctl" data-ctl="key-b12"><rect x="516.2" y="346" width="36" height="72" rx="18" fill="#fff" stroke="#111" stroke-width="2"/><rect id="kled-12" x="532.2" y="358" width="4" height="26" rx="2" fill="#9a9a9a"/><text x="534.2" y="409" text-anchor="middle" font-size="13" class="f">12</text></g><g id="key-b13" class="ctl" data-ctl="key-b13"><rect x="559.4000000000001" y="346" width="36" height="72" rx="18" fill="#fff" stroke="#111" stroke-width="2"/><rect id="kled-13" x="575.4000000000001" y="358" width="4" height="26" rx="2" fill="#9a9a9a"/><text x="577.4000000000001" y="409" text-anchor="middle" font-size="13" class="f">13</text></g><g id="key-b14" class="ctl" data-ctl="key-b14"><rect x="602.6" y="346" width="36" height="72" rx="18" fill="#fff" stroke="#111" stroke-width="2"/><rect id="kled-14" x="618.6" y="358" width="4" height="26" rx="2" fill="#9a9a9a"/><text x="620.6" y="409" text-anchor="middle" font-size="13" class="f">14</text></g><g id="key-b15" class="ctl" data-ctl="key-b15"><rect x="645.8000000000001" y="346" width="36" height="72" rx="18" fill="#fff" stroke="#111" stroke-width="2"/><rect id="kled-15" x="661.8000000000001" y="358" width="4" height="26" rx="2" fill="#9a9a9a"/><text x="663.8000000000001" y="409" text-anchor="middle" font-size="13" class="f">15</text></g><g id="key-b16" class="ctl" data-ctl="key-b16"><rect x="689.0" y="346" width="36" height="72" rx="18" fill="#fff" stroke="#111" stroke-width="2"/><rect id="kled-16" x="705.0" y="358" width="4" height="26" rx="2" fill="#9a9a9a"/><text x="707.0" y="409" text-anchor="middle" font-size="13" class="f">16</text></g></svg></div>
+  <div class="tabs" id="tabs">
+    <button class="tab on" data-mode="-1">Explore</button>
+    <button class="tab" data-mode="0">Lesson 1 · First sounds</button>
+    <button class="tab" data-mode="1">Lesson 2 · Shape it</button>
+    <button class="tab" data-mode="2">Lesson 3 · First beat</button>
+  </div>
+  <div class="card" id="card">
+    <h2>Click anything on the panel</h2>
+    <p>Every control answers with what it does, in plain words. The keys play real notes. Sound starts after your first click (the browser asks it that way). Turn your volume to a nice level first.</p>
+    <p class="hear">This is a companion to the <a href="https://pingywon.github.io/fm1-easy-guide/">FM-1 Easy Guide</a> — a free, printable, plain-words guide to the real device.</p>
+  </div>
+  <footer>
+    <span>FM-1 Follow-Along · v2.1.0</span>
+    <a href="https://pingywon.github.io/fm1-easy-guide/">Project page</a>
+    <a href="https://pingywon.github.io/fm1-easy-guide/FM-1-Easy-Guide.pdf">The guide (PDF)</a>
+    <a href="https://github.com/pingywon/fm1-easy-guide">GitHub</a>
+    <span>Unofficial — not affiliated with M-VAVE.</span>
+  </footer>
+</div>
+<script>
+"use strict";
+/* ---------- tiny FM synth ---------- */
+let AC = null, masterGain = null;
+function audio() {
+  if (!AC) {
+    AC = new (window.AudioContext || window.webkitAudioContext)();
+    masterGain = AC.createGain(); masterGain.gain.value = state.vol; masterGain.connect(AC.destination);
+  }
+  if (AC.state === "suspended") AC.resume();
+  return AC;
+}
+const PRESETS = [
+  { n: "001 PIANO 1",  ratio: 1,    idx: 5,   e: [0.004, 0.55, 0.25, 0.35] },
+  { n: "002 ORGAN 1",  ratio: 2,    idx: 1.2, e: [0.01,  0.10, 0.90, 0.08] },
+  { n: "035 BASS 1",   ratio: 1,    idx: 3,   e: [0.004, 0.22, 0.15, 0.12] },
+  { n: "004 SYN PAD 1",ratio: 2,    idx: 1.6, e: [0.45,  0.50, 0.80, 1.10] },
+  { n: "101 FROGBELL", ratio: 3.53, idx: 9,   e: [0.002, 1.20, 0.0,  0.45] },
+  { n: "118 KALIMBA",  ratio: 2.96, idx: 2.6, e: [0.002, 0.30, 0.0,  0.25] },
+  { n: "127 PERCUSSION (MY DRUM)", ratio: 1.41, idx: 7, e: [0.001, 0.11, 0.0, 0.07] },
+  { n: "065 BRASS 1",  ratio: 1,    idx: 8,   e: [0.07,  0.30, 0.70, 0.20] },
+];
+const DRUM = 6; /* preset index used by the sequencer */
+function playNote(midi, presetIdx, dur, when) {
+  const ac = audio(), p = PRESETS[presetIdx];
+  const t = when || ac.currentTime;
+  const f = 440 * Math.pow(2, (midi - 69) / 12);
+  const env = state.envOn ? state.env.map((v, i) => i === 2 ? v / 100 : 0.002 + 1.5 * v / 100) : p.e.slice();
+  const [a, d, s, r] = state.envOn ? env : p.e;
+  const car = ac.createOscillator(), mod = ac.createOscillator();
+  const mg = ac.createGain(), vg = ac.createGain();
+  car.frequency.value = f; mod.frequency.value = f * p.ratio;
+  mg.gain.setValueAtTime(p.idx * f, t);
+  mg.gain.exponentialRampToValueAtTime(Math.max(p.idx * f * 0.15, 1), t + Math.max(d * 1.4, 0.05));
+  mod.connect(mg); mg.connect(car.frequency);
+  const hold = dur || 0.45;
+  vg.gain.setValueAtTime(0.0001, t);
+  vg.gain.exponentialRampToValueAtTime(0.5, t + Math.max(a, 0.003));
+  vg.gain.exponentialRampToValueAtTime(Math.max(0.5 * s, 0.0001), t + Math.max(a, 0.003) + d);
+  vg.gain.setValueAtTime(Math.max(0.5 * s, 0.0001), t + Math.max(a, 0.003) + d + hold);
+  vg.gain.exponentialRampToValueAtTime(0.0001, t + Math.max(a, 0.003) + d + hold + r);
+  car.connect(vg); vg.connect(masterGain);
+  const stop = t + a + d + hold + r + 0.1;
+  car.start(t); mod.start(t); car.stop(stop); mod.stop(stop);
+}
+/* bottom keys = the piano's natural notes F3..G5; top keys = the in-betweens */
+const WHITE = [0, 2, 4, 6, 7, 9, 11, 12, 14, 16, 18, 19, 21, 23, 24, 26];
+const BLACK_AFTER = [0, 1, 2, 4, 5, 7, 8, 9, 11, 12, 14];
+function keyMidi(id) {
+  if (id.startsWith("key-b")) return 53 + WHITE[+id.slice(5) - 1] + 12 * state.oct;
+  return 53 + WHITE[BLACK_AFTER[+id.slice(5) - 1]] + 1 + 12 * state.oct;
+}
+/* ---------- state ---------- */
+const state = { vol: 0.5, preset: 0, oct: 0, envOn: false, env: [10, 40, 60, 30],
+  seqOn: false, rec: false, playing: false, steps: new Array(16).fill(null), stepCount: 8,
+  recPos: 0, tempo: 100, timer: null, pos: 0, mode: -1, li: 0 };
+/* ---------- screen ---------- */
+const $ = id => document.getElementById(id);
+function scr(top, mid, mid2, bot) {
+  if (top !== null) $("scr-top").textContent = top;
+  $("scr-mid").textContent = mid || "";
+  $("scr-mid2").textContent = mid2 || "";
+  $("scr-bot").textContent = bot || "";
+  $("scr-wave").style.display = mid ? "none" : "";
+}
+let popT = null;
+function pop(mid, mid2) {
+  scr(null, mid, mid2, botLine());
+  clearTimeout(popT);
+  popT = setTimeout(() => scr(null, "", "", botLine()), 1400);
+}
+function botLine() {
+  if (state.seqOn) return "SEQ" + (state.rec ? " · REC" : state.playing ? " · PLAY" : "") + " · tempo " + state.tempo;
+  if (state.envOn) return "ENV  A" + state.env[0] + " D" + state.env[1] + " S" + state.env[2] + " R" + state.env[3];
+  return "HOME";
+}
+/* ---------- knobs ---------- */
+const knobVal = { "ctl-master": 2, "ctl-knob1": 0, "ctl-knob2": 2, "ctl-knob3": 3, "ctl-knob4": 1 };
+function spin(id, steps) {
+  const ptr = $(id + "-ptr");
+  if (ptr) { knobSpin[id] = (knobSpin[id] || 0) + 360 / steps; ptr.style.transform = "rotate(" + knobSpin[id] + "deg)"; }
+}
+const knobSpin = {};
+/* ---------- sequencer ---------- */
+const BOOK_BEAT = ["key-b1", "key-b16", "key-b9", "key-b16", "key-b1", "key-b16", "key-b9", "key-b16"];
+function seqLights() {
+  for (let i = 1; i <= 16; i++) {
+    const led = $("kled-" + i);
+    led.setAttribute("fill", state.steps[i - 1] !== null ? "#111" : "#9a9a9a");
+    led.setAttribute("height", state.seqOn && i <= state.stepCount ? 34 : 26);
+  }
+}
+function chase(i) {
+  for (let k = 1; k <= 16; k++) $("kled-" + k).setAttribute("width", k - 1 === i ? 8 : 4);
+}
+function seqStart() {
+  if (state.timer) clearInterval(state.timer);
+  state.playing = true; state.pos = 0; led("btn-play", true);
+  const tick = () => {
+    const m = state.steps[state.pos];
+    if (m !== null) playNote(m, DRUM, 0.05);
+    chase(state.pos);
+    state.pos = (state.pos + 1) % state.stepCount;
+  };
+  tick();
+  state.timer = setInterval(tick, (30 / state.tempo) * 1000);
+  scr(null, "", "", botLine());
+}
+function seqStop() {
+  if (state.timer) clearInterval(state.timer);
+  state.timer = null; state.playing = false; led("btn-play", false); chase(-1);
+  scr(null, "", "", botLine());
+}
+function led(btn, on) { const l = $(btn + "-led"); if (l) l.setAttribute("fill", on ? "#111" : "#fff"); }
+/* ---------- explore cards ---------- */
+const CARDS = {
+  "ctl-master": ["MASTER", "Volume. The only knob with an end-stop. Each click here steps it up (it wraps around)."],
+  "ctl-select": ["SELECT", "Turns the page inside a drawer — most drawers have 2 or 3 pages of settings. This demo keeps everything on one page."],
+  "ctl-presets": ["PRESETS", "Picks one of the 128 sounds. Each click loads the next one — play some keys and hear it change. Guide: Lesson 1."],
+  "ctl-algorithm": ["ALGORITHM", "Changes how the 6 operators push each other — 32 wirings, big changes to the tone. Guide: Lesson 9."],
+  "ctl-knob1": ["KNOB 1", "The 4 helper knobs change jobs in every drawer. Press ENV, then this knob sets Attack — how fast a sound wakes up."],
+  "ctl-knob2": ["KNOB 2", "In the ENV drawer this sets Decay — how fast the sound calms down after the first loud moment."],
+  "ctl-knob3": ["KNOB 3", "In the ENV drawer: Sustain. With SEQ on: tempo — click it while the loop plays."],
+  "ctl-knob4": ["KNOB 4", "In the ENV drawer this sets Release — how long the sound takes to fade after you let go."],
+  "btn-octdown": ["OCT−", "Moves the whole keyboard one floor lower (down to −3). Low floors are where bass and BOOM live."],
+  "btn-octup": ["OCT+", "Moves the whole keyboard one floor higher (up to +3). High floors are ticks and bells. Press OCT− and OCT+ on the real one together to reset."],
+  "btn-fx": ["FX", "Six effects in a row: Filter, Reverb, Delay, Distortion, Chorus, Phaser. Not wired in this demo — the guide's Lesson 5 walks the real ones."],
+  "btn-sel": ["SEL", "Only works inside FX on the real device: grabs an effect so you can slide it to a new spot in the chain."],
+  "btn-env": ["ENV", "A sound's life story: Attack, Decay, Sustain, Release on the 4 knobs. Click it and try them — Lesson 2 walks you through."],
+  "btn-lfo": ["LFO", "An invisible hand that wiggles the pitch (siren) or loudness (helicopter). Guide: Lesson 4."],
+  "btn-edit": ["EDIT", "Deep sound building on the real device — the keys become buttons for the 6 operators. Guide: Lesson 9."],
+  "btn-glo": ["GLO", "Machine settings: factory reset, how hard the keys hit, glide. Guide: Lesson 8."],
+  "btn-home": ["HOME", "The escape key. Closes whatever drawer is open — here it also stops the sequencer."],
+  "btn-save": ["SAVE", "On the real FM-1 nothing is kept until you press this. Golden rule number 5."],
+  "btn-arp": ["ARP", "Hold keys and it plays them one after another by itself. Here's a taste —"],
+  "btn-seq": ["SEQ", "The 16-step music box. The bottom keys just became its steps. Try Lesson 3 to record the famous beat."],
+  "btn-play": ["PLAY/STOP", "Starts and stops the music box. It needs SEQ on first — the real one says the same thing."],
+  "btn-rec": ["REC", "Records into the music box: each key you click fills the next step. Needs SEQ on."],
+  "KEYTOP": ["Top keys", "The in-between (sharp and flat) notes, like a piano's black keys. The labels under them (OP1…POLY) only matter in EDIT."],
+  "KEYBOT": ["Bottom keys", "The main notes, left = low, right = high. Up to 12 at once on the real one. In SEQ they turn into the 16 steps."],
+};
+/* ---------- lessons ---------- */
+const LESSONS = [
+  { title: "Lesson 1 · First sounds", done: "You can find sounds and play them. That's most of the fun already. Next: shape a sound with ENV.",
+    steps: [
+      { t: "ctl-master", say: "Click MASTER once to set the volume.", hear: "the pointer turns; the screen shows the level" },
+      { t: "key-b1", say: "Click bottom key 1 — the far left.", hear: "a low note, like a bear" },
+      { t: "key-b16", say: "Now bottom key 16 — the far right.", hear: "a high note, like a bird" },
+      { t: "KEYS3", say: "Click any three different keys, quickly.", hear: "the notes ring together — a chord" },
+      { t: "ctl-presets", say: "Click PRESETS to load the next sound.", hear: "a new name on the screen" },
+      { t: "key-b5", say: "Play bottom key 5 with the new sound.", hear: "the same key, a different instrument" },
+      { t: "ctl-presets", say: "Keep clicking PRESETS and playing keys. Find one you like.", hear: "eight sounds in this demo; 128 on the real one" },
+    ] },
+  { title: "Lesson 2 · Shape it (ENV)", done: "Attack and Release are the two knobs that change a sound the most. On the real FM-1, press SAVE to keep what you shaped.",
+    steps: [
+      { t: "btn-env", say: "Press ENV to open the envelope drawer.", hear: "the screen shows A · D · S · R" },
+      { t: "ctl-knob1", say: "Click KNOB 1 — turn Attack up. (Again for more.)", hear: "the A number climbs" },
+      { t: "key-b5", say: "Play a key and hold your ears open.", hear: "the note fades in slowly, like a ghost" },
+      { t: "ctl-knob4", say: "Click KNOB 4 — turn Release up.", hear: "the R number climbs" },
+      { t: "key-b8", say: "Tap a key and listen to the tail.", hear: "the note takes a long, soft fall" },
+      { t: "btn-env", say: "Press ENV again to close the drawer.", hear: "back to normal sounds" },
+    ] },
+  { title: "Lesson 3 · First beat (SEQ)", done: "That's the most famous beat in the world, and you built it. On the real FM-1: save your sound first, then pick it inside SEQ on page 2 — that's the one trap everyone hits.",
+    steps: [
+      { t: "btn-seq", say: "Press SEQ. The bottom keys just became 8 steps of a music box.", hear: "the SEQ light comes on; the demo loads MY DRUM" },
+      { t: "btn-rec", say: "Press REC — it's listening.", hear: "the REC light comes on" },
+      { t: "SEQ8", say: "Click the keys in this order: 1 · 16 · 9 · 16 · 1 · 16 · 9 · 16.", hear: "low key = BOOM, middle = SNAP, high = tick" },
+      { t: "btn-rec", say: "Press REC again to stop recording.", hear: "the REC light goes off" },
+      { t: "btn-play", say: "Press PLAY.", hear: "boom – tick – SNAP – tick, forever" },
+      { t: "ctl-knob3", say: "Click KNOB 3 while it plays — change the tempo.", hear: "faster… or lazier" },
+      { t: "btn-play", say: "Press PLAY/STOP when you've grooved enough.", hear: "silence. You made a beat." },
+    ] },
+];
+let sub = 0;
+function lessonStep() { return state.mode >= 0 ? LESSONS[state.mode].steps[state.li] : null; }
+function ringTo(target) {
+  const ring = $("hl-ring");
+  if (!target) { ring.style.display = "none"; return; }
+  let el = null;
+  if (target === "KEYS3" || target === "SEQ8") {
+    ring.setAttribute("x", 26); ring.setAttribute("y", 252); ring.setAttribute("width", 708); ring.setAttribute("height", 180);
+    if (target === "SEQ8") { const el2 = $(BOOK_BEAT[sub]); if (el2) { const b = el2.getBBox(); ring.setAttribute("x", b.x - 7); ring.setAttribute("y", b.y - 7); ring.setAttribute("width", b.width + 14); ring.setAttribute("height", b.height + 14); } }
+    ring.style.display = ""; return;
+  }
+  el = $(target);
+  if (!el) { ring.style.display = "none"; return; }
+  const b = el.getBBox();
+  ring.setAttribute("x", b.x - 7); ring.setAttribute("y", b.y - 7);
+  ring.setAttribute("width", b.width + 14); ring.setAttribute("height", b.height + 14);
+  ring.style.display = "";
+}
+function showCard(h, body, hear) {
+  $("card").innerHTML = "<h2>" + h + "</h2><p>" + body + "</p>" + (hear ? '<p class="hear"><b>You should hear/see:</b> ' + hear + "</p>" : "");
+}
+function renderLesson() {
+  const L = LESSONS[state.mode];
+  if (state.li >= L.steps.length) {
+    ringTo(null);
+    const next = state.mode < 2 ? '<button class="nextbtn" id="nextLesson">Next lesson →</button>' : '<a class="nextbtn" style="display:inline-block;text-decoration:none" href="https://pingywon.github.io/fm1-easy-guide/FM-1-Easy-Guide.pdf">Open the full guide (PDF) →</a>';
+    $("card").innerHTML = '<p class="stepno">' + L.title + " · done</p><h2>Nice!</h2><p>" + L.done + "</p>" + next;
+    const nb = $("nextLesson"); if (nb) nb.addEventListener("click", () => setMode(state.mode + 1));
+    return;
+  }
+  const s = L.steps[state.li];
+  const extra = s.t === "KEYS3" ? " (" + sub + " of 3)" : s.t === "SEQ8" ? " (hit " + sub + " of 8)" : "";
+  $("card").innerHTML = '<p class="stepno">' + L.title + " · step " + (state.li + 1) + " of " + L.steps.length + extra + "</p><h2>" + s.say + "</h2>" + (s.hear ? '<p class="hear"><b>You should hear/see:</b> ' + s.hear + "</p>" : "");
+  ringTo(s.t);
+}
+function setMode(m) {
+  state.mode = m; state.li = 0; sub = 0;
+  document.querySelectorAll(".tab").forEach(b => b.classList.toggle("on", +b.dataset.mode === m));
+  if (m === 2 && !state.seqOn) { /* lesson 3 starts clean */ seqStop(); }
+  if (m >= 0) renderLesson();
+  else { ringTo(null); showCard("Click anything on the panel", "Every control answers with what it does, in plain words. The keys play real notes."); }
+}
+function advanceIf(id) {
+  const s = lessonStep(); if (!s) return;
+  let hit = false;
+  if (s.t === "KEYS3") { if (id.startsWith("key-")) { sub++; hit = sub >= 3; if (!hit) { renderLesson(); return; } } }
+  else if (s.t === "SEQ8") { if (id === BOOK_BEAT[sub]) { sub++; if (sub < 8) { renderLesson(); return; } hit = true; } }
+  else hit = id === s.t;
+  if (hit) { state.li++; sub = 0; renderLesson(); }
+}
+/* ---------- actions ---------- */
+function act(id) {
+  audio();
+  if (id.startsWith("key-")) {
+    const ls = lessonStep();
+    if (ls && ls.t === "SEQ8" && state.rec && id !== BOOK_BEAT[sub]) {
+      playNote(keyMidi(id), DRUM, 0.05);
+      return; /* wrong key while following the beat: hear it, don't record it */
+    }
+    if (state.seqOn && state.rec) {
+      state.steps[state.recPos % state.stepCount] = keyMidi(id);
+      playNote(keyMidi(id), DRUM, 0.05);
+      state.recPos++; seqLights();
+    } else {
+      playNote(keyMidi(id), state.preset, 0.4);
+    }
+    advanceIf(id); return;
+  }
+  switch (id) {
+    case "ctl-master": {
+      const lv = [0, 1, 2, 3, 4]; knobVal[id] = (knobVal[id] + 1) % 5; state.vol = knobVal[id] / 4;
+      if (masterGain) masterGain.gain.value = state.vol;
+      spin(id, 5); pop("VOLUME " + knobVal[id] * 25 + "%", knobVal[id] === 0 ? "(muted)" : ""); break; }
+    case "ctl-presets": {
+      state.preset = (state.preset + 1) % PRESETS.length;
+      spin(id, PRESETS.length);
+      $("scr-top").textContent = PRESETS[state.preset].n;
+      pop(PRESETS[state.preset].n.split(" ").slice(1).join(" "), "play some keys");
+      playNote(65, state.preset, 0.25); break; }
+    case "ctl-algorithm": spin(id, 8); pop("ALGORITHM", "32 wirings on the real one"); break;
+    case "ctl-select": spin(id, 6); pop("SELECT", "turns pages on the real one"); break;
+    case "ctl-knob1": case "ctl-knob2": case "ctl-knob4": {
+      const k = +id.slice(-1) - 1;
+      if (state.envOn) { state.env[k] = (state.env[k] + 20) % 120; if (state.env[k] > 100) state.env[k] = 0;
+        spin(id, 6); scr(null, ["ATTACK", "DECAY", "SUSTAIN", "RELEASE"][k] + " " + state.env[k], "", botLine()); }
+      else { spin(id, 6); pop("KNOB " + (k + 1), "press ENV first, then I do something"); }
+      break; }
+    case "ctl-knob3": {
+      if (state.seqOn) { const T = [80, 100, 124, 140]; state.tempo = T[(T.indexOf(state.tempo) + 1) % T.length];
+        spin(id, 4); scr(null, "TEMPO " + state.tempo, "", botLine()); if (state.playing) seqStart(); }
+      else if (state.envOn) { state.env[2] = (state.env[2] + 20) % 120; if (state.env[2] > 100) state.env[2] = 0;
+        spin(id, 6); scr(null, "SUSTAIN " + state.env[2], "", botLine()); }
+      else { spin(id, 6); pop("KNOB 3", "press ENV or SEQ first"); }
+      break; }
+    case "btn-octdown": state.oct = Math.max(-3, state.oct - 1); pop("OCTAVE " + (state.oct > 0 ? "+" : "") + state.oct); break;
+    case "btn-octup": state.oct = Math.min(3, state.oct + 1); pop("OCTAVE " + (state.oct > 0 ? "+" : "") + state.oct); break;
+    case "btn-env": state.envOn = !state.envOn; led(id, state.envOn);
+      scr(null, state.envOn ? "ENVELOPE" : "", state.envOn ? "knobs 1-4 = A D S R" : "", botLine()); break;
+    case "btn-seq": {
+      state.seqOn = !state.seqOn; led(id, state.seqOn);
+      if (state.seqOn) { state.preset = DRUM; $("scr-top").textContent = PRESETS[DRUM].n;
+        scr(null, "SEQUENCER", "8 steps · keys are steps now", botLine()); }
+      else { state.rec = false; led("btn-rec", false); seqStop(); scr(null, "", "", botLine()); }
+      seqLights(); break; }
+    case "btn-rec":
+      if (!state.seqOn) { pop("Enable SEQ first"); break; }
+      state.rec = !state.rec; led(id, state.rec);
+      if (state.rec) { state.recPos = 0; state.steps.fill(null); seqLights(); }
+      scr(null, state.rec ? "RECORDING" : "", state.rec ? "click keys, one per step" : "", botLine()); break;
+    case "btn-play":
+      if (!state.seqOn) { pop("Enable SEQ first"); break; }
+      if (state.playing) seqStop(); else { state.rec = false; led("btn-rec", false); seqStart(); }
+      break;
+    case "btn-home": state.envOn = false; led("btn-env", false); if (state.playing) seqStop(); pop("HOME"); break;
+    case "btn-save": pop("Preset Saved", "(the real one keeps everything)"); break;
+    case "btn-arp": { pop("ARP", "da-da-da, by itself"); const base = [65, 69, 72];
+      for (let i = 0; i < 9; i++) playNote(base[i % 3], 1, 0.12, audio().currentTime + i * 0.14); break; }
+    default: break;
+  }
+  advanceIf(id);
+}
+/* ---------- wiring ---------- */
+document.addEventListener("DOMContentLoaded", () => {
+  const svg = document.querySelector("#panel svg");
+  const ring = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+  ring.setAttribute("id", "hl-ring"); ring.setAttribute("rx", 12); ring.setAttribute("fill", "none");
+  ring.setAttribute("stroke", "#111"); ring.setAttribute("stroke-width", 4); ring.setAttribute("stroke-dasharray", "10 8");
+  ring.style.display = "none"; svg.appendChild(ring);
+  svg.addEventListener("pointerdown", ev => {
+    const g = ev.target.closest(".ctl"); if (!g) return;
+    const id = g.dataset.ctl;
+    act(id);
+    if (state.mode === -1 && CARDS[id]) showCard(CARDS[id][0], CARDS[id][1]);
+    else if (state.mode === -1 && id.startsWith("key-t")) showCard(...CARDS.KEYTOP);
+    else if (state.mode === -1 && id.startsWith("key-b")) showCard(...CARDS.KEYBOT);
+  });
+  document.querySelectorAll(".tab").forEach(b => b.addEventListener("click", () => setMode(+b.dataset.mode)));
+  seqLights();
+});
+</script>
+</body></html>
