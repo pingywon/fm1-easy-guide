@@ -22,10 +22,16 @@ def main():
     for f in os.listdir(os.path.join(HERE, "fonts")):
         if f.endswith(".woff2"):
             shutil.copy(os.path.join(HERE, "fonts", f), os.path.join(SITE, "fonts", f))
+    os.makedirs(os.path.join(SITE, "sloop"))
+    sl = open(os.path.join(HERE, "demo", "src", "sloop.html")).read()
+    for k, v in (("{{PANEL}}", build.device("demo")), ("{{VERSION}}", VERSION), ("{{PAGES}}", PAGES)):
+        assert k in sl, k
+        sl = sl.replace(k, v)
+    open(os.path.join(SITE, "sloop", "index.html"), "w").write(sl)
     open(os.path.join(SITE, "_headers"), "w").write(
         "/*\n  X-Robots-Tag: noindex, nofollow\n  Cache-Control: no-cache\n  X-Content-Type-Options: nosniff\n")
     open(os.path.join(SITE, "version.txt"), "w").write(VERSION + "\n")
-    print(f"demo/site built, v{VERSION}, {len(html)} bytes")
+    print(f"demo/site built, v{VERSION}, {len(html)} + sloop {len(sl)} bytes")
 
 
 if __name__ == "__main__":

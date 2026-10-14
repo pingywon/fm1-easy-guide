@@ -40,10 +40,12 @@ a free 31-page guide where every page is one idea with tick-box steps, and a cli
 real sound while it walks you through the buttons, your first sounds and your first beat. No music knowledge needed.</p>
 <div class="btns">
   <a class="btn dark" href="%(demo)s">Try the follow-along demo</a>
+  <a class="btn" href="%(demo)s/sloop/">SLOOP firmware tutorial</a>
   <a class="btn" href="FM-1-Easy-Guide.pdf">Read the guide (PDF)</a>
   <a class="btn" href="https://github.com/pingywon/fm1-easy-guide">GitHub</a>
 </div>
-<p class="small">The PDF prints fine in black &amp; white. The demo runs in any modern browser, sound and all.</p>
+<p class="small">The PDF prints fine in black &amp; white. The demos run in any modern browser, sound and all.
+Running the free <b>SLOOP</b> firmware (a 4-track groovebox for the FM-1)? Its own tutorial teaches loops, layering and four ready-made grooves.</p>
 <div class="thumbs">%(thumbs)s</div>
 <p class="small">Three of the 31 pages: the cover, a lesson, and how a beat works.</p>
 <footer>FM-1 Easy Guide · v%(v)s · unofficial — not made by or affiliated with M-VAVE · MIT licensed</footer>

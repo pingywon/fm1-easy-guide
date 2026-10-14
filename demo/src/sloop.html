@@ -1,0 +1,814 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>FM-1 SLOOP Follow-Along</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23111'/%3E%3Crect x='5' y='7' width='22' height='4' rx='1' fill='%233b82f6'/%3E%3Crect x='5' y='13' width='22' height='4' rx='1' fill='%2322c55e'/%3E%3Crect x='5' y='19' width='22' height='4' rx='1' fill='%23eab308'/%3E%3Crect x='5' y='25' width='22' height='3' rx='1' fill='%23f97316'/%3E%3C/svg%3E">
+<style>
+@font-face { font-family: "Fredoka"; src: url(../fonts/Fredoka-600-normal.woff2) format("woff2"); font-weight: 600; }
+@font-face { font-family: "Fredoka"; src: url(../fonts/Fredoka-700-normal.woff2) format("woff2"); font-weight: 700; }
+@font-face { font-family: "Atkinson Hyperlegible"; src: url(../fonts/AtkinsonHyperlegible-400-normal.woff2) format("woff2"); font-weight: 400; }
+@font-face { font-family: "Atkinson Hyperlegible"; src: url(../fonts/AtkinsonHyperlegible-700-normal.woff2) format("woff2"); font-weight: 700; }
+:root { --ink: #111; --ink2: #3a3a3a; --t1: #3b82f6; --t2: #22c55e; --t3: #eab308; --t4: #f97316; }
+* { box-sizing: border-box; }
+body { margin: 0; background: #fff; color: var(--ink); font-family: "Atkinson Hyperlegible", sans-serif; font-size: 17px; line-height: 1.45; }
+.wrap { max-width: 1240px; margin: 0 auto; padding: 12px 16px 26px; }
+.top { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+h1 { font-family: "Fredoka", sans-serif; font-weight: 700; font-size: 24px; margin: 2px 0; }
+h1 .bar { display: inline-block; width: 10px; height: 22px; border-radius: 3px; margin-right: 3px; vertical-align: -3px; }
+.sub { color: var(--ink2); margin: 0 0 8px; font-size: 15px; }
+.tools { display: flex; gap: 8px; }
+.tools button, .tab, .nextbtn, .chip { font-family: "Fredoka", sans-serif; font-weight: 700; border: 2px solid var(--ink); border-radius: 9px; background: #fff; cursor: pointer; box-shadow: 0 2px 0 var(--ink); color: var(--ink); }
+.tools button { font-size: 16px; min-width: 44px; height: 40px; padding: 0 12px; }
+.tabs { display: flex; gap: 7px; flex-wrap: wrap; margin: 4px 0 10px; }
+.tab { font-weight: 600; font-size: 15px; padding: 7px 12px; min-height: 40px; }
+.tab.on { background: var(--ink); color: #fff; }
+.tab.vibe { border-color: var(--t4); box-shadow: 0 2px 0 var(--t4); }
+.tab.vibe.on { background: var(--t4); color: #111; }
+.grid { display: grid; grid-template-columns: minmax(0, 1fr) 400px; gap: 16px; align-items: start; }
+#panelbox { overflow: auto; }
+#panelscale { transform-origin: top left; width: 100%; }
+.panel { user-select: none; -webkit-user-select: none; }
+.panel .ctl { cursor: pointer; }
+.panel .ctl:hover { opacity: 0.82; }
+svg text { font-family: "Atkinson Hyperlegible", sans-serif; }
+svg .f { font-family: "Fredoka", sans-serif; font-weight: 700; }
+#hl-ring { pointer-events: none; animation: dash 0.8s linear infinite; }
+@keyframes dash { to { stroke-dashoffset: -28; } }
+svg.dimmed .ctl { opacity: 0.3; transition: opacity 0.2s; }
+svg.dimmed .ctl.hl { opacity: 1; animation: pulse 0.9s ease-in-out infinite; }
+@keyframes pulse { 50% { opacity: 0.55; } }
+.side { min-width: 0; }
+.mirror { display: block; width: 100%; max-width: 300px; margin: 0 auto 10px; border-radius: 12px; border: 2.5px solid var(--ink); background: #0b0b0b; }
+.mirror-cap { text-align: center; font-size: 13px; color: var(--ink2); margin: -6px 0 10px; }
+.card { border: 2.5px solid var(--ink); border-radius: 12px; padding: 14px 18px; min-height: 160px; }
+.card h2 { font-family: "Fredoka", sans-serif; font-weight: 700; font-size: 19px; margin: 0 0 6px; }
+.card h3 { font-family: "Fredoka", sans-serif; font-weight: 700; font-size: 16px; margin: 12px 0 4px; }
+.card p { margin: 0 0 8px; }
+.card ol { margin: 4px 0 8px; padding-left: 22px; }
+.card li { margin-bottom: 4px; }
+.hear { font-size: 15px; color: var(--ink2); }
+.hear b { color: var(--ink); }
+.stepno { font-family: "Fredoka", sans-serif; font-weight: 600; font-size: 13px; letter-spacing: 1px; text-transform: uppercase; color: var(--ink2); }
+.nextbtn { font-size: 16px; padding: 9px 16px; margin-top: 4px; display: inline-block; text-decoration: none; }
+.vibes { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 6px 0 10px; }
+.vibebtn { font-family: "Fredoka", sans-serif; font-weight: 700; font-size: 16px; padding: 10px 8px; border: 2.5px solid var(--ink); border-radius: 10px; background: #fff; cursor: pointer; box-shadow: 0 2px 0 var(--ink); text-align: left; min-height: 56px; }
+.vibebtn small { display: block; font-family: "Atkinson Hyperlegible", sans-serif; font-weight: 400; font-size: 13px; color: var(--ink2); }
+.vibebtn.on { background: var(--ink); color: #fff; }
+.vibebtn.on small { color: #ddd; }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; margin: 6px 0 8px; }
+.chip { font-size: 14px; padding: 6px 10px; min-height: 38px; border-width: 2px; }
+.chip i { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 5px; }
+.chip.on { background: var(--ink); color: #fff; }
+.note { font-size: 13px; color: var(--ink2); }
+.under { margin-top: 12px; min-height: 0; }
+.under ol { columns: 2; column-gap: 28px; }
+.under li { break-inside: avoid; }
+@media (max-width: 980px) { .under ol { columns: 1; } }
+footer { margin-top: 16px; padding-top: 12px; border-top: 2px solid var(--ink); font-size: 14px; color: var(--ink2); display: flex; gap: 14px; flex-wrap: wrap; }
+footer a { color: var(--ink); display: inline-block; padding: 10px 2px; }
+footer .credit { flex-basis: 100%; font-size: 12.5px; }
+@media (max-width: 980px) { .grid { grid-template-columns: 1fr; } .mirror { max-width: 260px; } }
+@media (max-width: 520px) { body { font-size: 16px; } h1 { font-size: 21px; } .tab { font-size: 14px; padding: 7px 10px; } .vibes { grid-template-columns: 1fr; } }
+</style>
+</head><body>
+<div class="wrap">
+  <div class="top">
+    <h1><span class="bar" style="background:var(--t1)"></span><span class="bar" style="background:var(--t2)"></span><span class="bar" style="background:var(--t3)"></span><span class="bar" style="background:var(--t4)"></span> SLOOP Follow-Along</h1>
+    <div class="tools">
+      <button id="zout" title="Zoom out" aria-label="Zoom out">&#8722;</button>
+      <button id="zin" title="Zoom in" aria-label="Zoom in">+</button>
+      <button id="fs" title="Full screen" aria-label="Full screen">&#x26F6; Full screen</button>
+    </div>
+  </div>
+  <p class="sub">Your FM-1 running the free <b>SLOOP</b> firmware: a 4-track groovebox. Drums, bass and two synths, all playing <b>at the same time</b>. Click the panel — it makes real sound.</p>
+  <div class="tabs" id="tabs">
+    <button class="tab on" data-mode="-1">Explore</button>
+    <button class="tab" data-mode="0">1 · Meet it</button>
+    <button class="tab" data-mode="1">2 · Drum loop</button>
+    <button class="tab" data-mode="2">3 · Bass on top</button>
+    <button class="tab" data-mode="3">4 · Chords</button>
+    <button class="tab" data-mode="4">5 · Mix &amp; FX</button>
+    <button class="tab" data-mode="5">6 · Song</button>
+    <button class="tab vibe" data-mode="9">&#9733; Vibes</button>
+  </div>
+  <div class="grid">
+    <div><div id="panelbox"><div id="panelscale"><div class="panel" id="panel">{{PANEL}}</div></div></div>
+      <div class="card under" id="under" style="display:none"></div></div>
+    <div class="side">
+      <svg class="mirror" id="mirror" viewBox="226 46 148 160" aria-label="The FM-1 screen, enlarged"><use href="#sl-screen"></use></svg>
+      <p class="mirror-cap">The screen, up close</p>
+      <div class="card" id="card"></div>
+    </div>
+  </div>
+  <footer>
+    <span>FM-1 SLOOP Follow-Along · v{{VERSION}}</span>
+    <a href="../">Stock-firmware tutorial</a>
+    <a href="{{PAGES}}">Project page</a>
+    <a href="{{PAGES}}FM-1-Easy-Guide.pdf">The guide (PDF)</a>
+    <a href="https://github.com/pingywon/fm1-easy-guide">GitHub</a>
+    <span class="credit">Teaches <b>SLOOP</b> by 3dSam (<a href="https://github.com/isod89/sloop-fm1">github.com/isod89/sloop-fm1</a>), GPL-3.0, based on Felucca by Leo Kuroshita / Hügelton Instruments. This page is an unofficial tutorial with its own code and its own lookalike sounds — not SLOOP itself, and not affiliated with M-VAVE or the SLOOP authors.</span>
+  </footer>
+</div>
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+const COL = ["#3b82f6", "#22c55e", "#eab308", "#f97316"];
+const DRUM_NAMES = ["KICK", "KICK 2", "SNARE", "CLAP", "HAT", "OPEN HAT", "PEDAL HAT", "RIM", "SNARE 2", "LOW TOM", "HI TOM", "CRASH", "RIDE", "SHAKER", "CONGA", "COWBELL"];
+const DRUM_SHORT = ["KICK", "KCK2", "SNR", "CLAP", "HAT", "OPEN", "PEDL", "RIM", "SNR2", "LTOM", "HTOM", "CRSH", "RIDE", "SHKR", "CNGA", "BELL"];
+const KITS = {
+  "808":     { k0: 150, k1: 42, kd: 0.75, sn: 185, sd: 0.2,  hd: 0.05,  hp: 7500, lp: 16000, cr: 0 },
+  "909":     { k0: 190, k1: 52, kd: 0.38, sn: 230, sd: 0.16, hd: 0.045, hp: 8000, lp: 18000, cr: 0.1 },
+  "HOUSE":   { k0: 175, k1: 50, kd: 0.34, sn: 215, sd: 0.15, hd: 0.05,  hp: 8500, lp: 18000, cr: 0.15 },
+  "BOOMBAP": { k0: 130, k1: 48, kd: 0.45, sn: 180, sd: 0.22, hd: 0.05,  hp: 6500, lp: 7000,  cr: 0.35 },
+  "LO-FI":   { k0: 120, k1: 45, kd: 0.42, sn: 170, sd: 0.17, hd: 0.04,  hp: 5000, lp: 3200,  cr: 0.6 },
+  "606":     { k0: 165, k1: 58, kd: 0.22, sn: 250, sd: 0.12, hd: 0.03,  hp: 9000, lp: 15000, cr: 0 },
+};
+const KIT_ORDER = Object.keys(KITS);
+const SYNTHS = [
+  { n: "808 BOOM",   t: "sub",   dec: 0.9, len: 3 },
+  { n: "DEEP SUB",   t: "sub",   dec: 0.45, len: 2 },
+  { n: "ACID 303",   t: "acid",  cut: 320, len: 1 },
+  { n: "RHODES",     t: "fm",    ratio: 1, idx: 2.2, dec: 0.9, len: 4 },
+  { n: "DUSTY PNO",  t: "fm",    ratio: 1, idx: 3, dec: 0.7, lp: 2200, len: 4 },
+  { n: "M1 PIANO",   t: "fm",    ratio: 1, idx: 4.5, dec: 0.35, oct: 1, len: 2 },
+  { n: "LOFI KEYS",  t: "fm",    ratio: 2, idx: 1.2, dec: 0.6, lp: 3000, len: 3 },
+  { n: "HOUSE ORGN", t: "organ", len: 2 },
+  { n: "LOFI FLUTE", t: "flute", len: 3 },
+  { n: "WARM PAD",   t: "pad",   len: 8 },
+  { n: "VOICE AAH",  t: "choir", len: 4 },
+];
+const SYN = n => SYNTHS.findIndex(s => s.n === n);
+const WHITE = [0, 2, 4, 6, 7, 9, 11, 12, 14, 16, 18, 19, 21, 23, 24, 26];
+const BLACK_AFTER = [0, 1, 2, 4, 5, 7, 8, 9, 11, 12, 14];
+const SCALES = { MINOR: [0, 2, 3, 5, 7, 8, 10], MAJOR: [0, 2, 4, 5, 7, 9, 11], DORIAN: [0, 2, 3, 5, 7, 9, 10] };
+const SCALE_ORDER = Object.keys(SCALES);
+const CHORDS = ["OFF", "TRIAD", "7TH", "9TH"];
+const NN = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+const TEMPOS = [70, 80, 84, 88, 90, 100, 110, 122, 126, 140];
+const mtof = m => 440 * Math.pow(2, (m - 69) / 12);
+const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+/* ---------------- state ---------------- */
+function emptySteps() { return Array.from({ length: 16 }, () => []); }
+function newTrack(i) {
+  return { preset: [SYN("808 BOOM"), SYN("RHODES"), SYN("LOFI FLUTE"), 0][i], steps: emptySteps(), level: 1,
+           mute: false, solo: false, oct: [-2, 0, 0, 0][i], chord: "OFF", dsend: [0, 0.12, 0.2, 0][i], rsend: [0.03, 0.25, 0.3, 0.05][i] };
+}
+const state = { tracks: [0, 1, 2, 3].map(newTrack), kit: "808", sel: 0, bpm: 90, swing: 50, vol: 0.7,
+  playing: false, rec: false, armed: false, layer: null, seqSound: 0, seqNote: 3, key: 0, scale: "MINOR",
+  dust: 0, duck: false, cut: 0, sections: [null, null, null, null], chain: [], chainPos: 0, chainFresh: false,
+  step: -1, msg: "", mode: -1, li: 0, vibe: null, cutMod: 1, sweep: false, fx: {} };
+const S = { played: [0, 0, 0, 0], drums: new Set(), kitChanges: 0, chordPlayed: 0, tape: 0, echo: 0, filt: 0, stut: 0 };
+function newProject() {
+  stopPlay();
+  state.tracks = [0, 1, 2, 3].map(newTrack); state.kit = "808"; state.bpm = 90; state.swing = 50; state.key = 0;
+  state.scale = "MINOR"; state.dust = 0; state.duck = false; state.cut = 0; state.sections = [null, null, null, null];
+  state.chain = []; state.chainPos = 0; state.layer = null; state.rec = false; state.armed = false; state.vibe = null;
+  state.seqSound = 0; state.sweep = false; state.cutMod = 1; state.sel = 0;
+  applyMix(); applyKit(); applyFx();
+}
+
+/* ---------------- audio ---------------- */
+let AC = null; const G = {};
+function makeNoise(sec) { const b = AC.createBuffer(1, Math.floor(AC.sampleRate * sec), AC.sampleRate); const d = b.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; return b; }
+function makeVerb(sec) { const n = Math.floor(AC.sampleRate * sec), b = AC.createBuffer(2, n, AC.sampleRate);
+  for (let c = 0; c < 2; c++) { const d = b.getChannelData(c); for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / n, 2.6); } return b; }
+function makeDust() { const n = Math.floor(AC.sampleRate * 2), b = AC.createBuffer(1, n, AC.sampleRate), d = b.getChannelData(0);
+  for (let i = 0; i < n; i++) { d[i] = (Math.random() * 2 - 1) * 0.004; if (Math.random() < 0.0007) { const amp = (Math.random() < 0.5 ? -1 : 1) * (0.25 + Math.random() * 0.6); for (let k = 0; k < 40 && i + k < n; k++) d[i + k] += amp * Math.exp(-k / 6); } } return b; }
+function crushCurve(a) { const n = 1024, c = new Float32Array(n), k = 1 + a * 12; for (let i = 0; i < n; i++) { const x = i / (n - 1) * 2 - 1; c[i] = Math.tanh(k * x) / Math.tanh(k); } return c; }
+function audio() {
+  if (!AC) {
+    AC = new (window.AudioContext || window.webkitAudioContext)();
+    G.noise = makeNoise(1);
+    G.master = AC.createGain(); G.master.gain.value = state.vol;
+    G.comp = AC.createDynamicsCompressor ? AC.createDynamicsCompressor() : AC.createGain();
+    G.filter = AC.createBiquadFilter(); G.filter.type = "lowpass"; G.filter.frequency.value = 18000;
+    G.duck = AC.createGain(); G.synthBus = AC.createGain(); G.drumBus = AC.createGain();
+    G.drumLP = AC.createBiquadFilter(); G.drumLP.type = "lowpass";
+    G.crush = AC.createWaveShaper();
+    G.delay = AC.createDelay(2); G.fb = AC.createGain(); G.fb.gain.value = 0.38;
+    G.verb = AC.createConvolver(); G.verb.buffer = makeVerb(2.4); G.verbOut = AC.createGain(); G.verbOut.gain.value = 0.8;
+    G.trk = []; G.ds = []; G.rs = [];
+    for (let i = 0; i < 4; i++) {
+      G.trk[i] = AC.createGain(); G.ds[i] = AC.createGain(); G.rs[i] = AC.createGain();
+      G.trk[i].connect(i < 3 ? G.synthBus : G.drumBus);
+      G.trk[i].connect(G.ds[i]); G.ds[i].connect(G.delay);
+      G.trk[i].connect(G.rs[i]); G.rs[i].connect(G.verb);
+    }
+    G.synthBus.connect(G.duck); G.duck.connect(G.filter);
+    G.drumBus.connect(G.drumLP); G.drumLP.connect(G.crush); G.crush.connect(G.filter);
+    G.delay.connect(G.fb); G.fb.connect(G.delay); G.delay.connect(G.filter);
+    G.verb.connect(G.verbOut); G.verbOut.connect(G.filter);
+    G.filter.connect(G.master); G.master.connect(G.comp); G.comp.connect(AC.destination);
+    G.dustSrc = AC.createBufferSource(); G.dustSrc.buffer = makeDust(); G.dustSrc.loop = true;
+    G.dustGain = AC.createGain(); G.dustGain.gain.value = 0; G.dustSrc.connect(G.dustGain); G.dustGain.connect(G.master); G.dustSrc.start();
+    applyMix(); applyKit(); applyFx();
+  }
+  if (AC.state === "suspended") AC.resume();
+  return AC;
+}
+function applyKit() { if (!AC) return; const k = KITS[state.kit]; G.drumLP.frequency.value = k.lp; G.crush.curve = crushCurve(k.cr); }
+function applyFx() { if (!AC) return;
+  G.filter.frequency.setTargetAtTime([18000, 6000, 2500, 1000][state.cut], AC.currentTime, 0.05);
+  G.dustGain.gain.setTargetAtTime([0, 0.25, 0.5, 0.85][state.dust], AC.currentTime, 0.1);
+  G.delay.delayTime.value = 60 / state.bpm * 0.75;
+  for (let i = 0; i < 4; i++) { G.ds[i].gain.value = state.tracks[i].dsend; G.rs[i].gain.value = state.tracks[i].rsend; } }
+function applyMix() { if (!AC) return; const anySolo = state.tracks.some(t => t.solo);
+  state.tracks.forEach((t, i) => { const on = !t.mute && (!anySolo || t.solo); G.trk[i].gain.setTargetAtTime(on ? t.level : 0, AC.currentTime, 0.06); });
+  G.master.gain.setTargetAtTime(state.vol, AC.currentTime, 0.05); }
+
+function vca(t, dest) { const g = AC.createGain(); g.gain.setValueAtTime(0.0001, t); g.connect(dest); return g; }
+function osc(type, f, t, stop, dest) { const o = AC.createOscillator(); o.type = type; o.frequency.setValueAtTime(f, t); o.connect(dest); o.start(t); o.stop(stop); return o; }
+function noiseSrc(t, stop, dest) { const s = AC.createBufferSource(); s.buffer = G.noise; s.loop = true; s.connect(dest); s.start(t); s.stop(stop); return s; }
+function filt(type, f, q, dest) { const b = AC.createBiquadFilter(); b.type = type; b.frequency.value = f; if (q) b.Q.value = q; b.connect(dest); return b; }
+function hit(g, t, peak, dec) { g.gain.setValueAtTime(peak, t); g.gain.exponentialRampToValueAtTime(0.0008, t + dec); }
+
+function drum(i, t) {
+  const k = KITS[state.kit], out = G.trk[3];
+  switch (i) {
+    case 0: case 1: { const lo = i === 1 ? 0.8 : 1; const g = vca(t, out); hit(g, t, 0.95, k.kd * lo);
+      const o = osc("sine", k.k0 * lo, t, t + k.kd + 0.05, g); o.frequency.exponentialRampToValueAtTime(k.k1 * lo, t + 0.08);
+      const c = vca(t, out); hit(c, t, 0.25, 0.012); noiseSrc(t, t + 0.02, filt("highpass", 3000, 0, c));
+      if (state.duck && state.playing) { G.duck.gain.setValueAtTime(0.22, t); G.duck.gain.linearRampToValueAtTime(1, t + 0.22); } break; }
+    case 2: case 8: { const tone = i === 8 ? k.sn * 1.25 : k.sn; const g1 = vca(t, out); hit(g1, t, 0.35, k.sd * 0.6); osc("triangle", tone, t, t + k.sd, g1);
+      const g2 = vca(t, out); hit(g2, t, 0.45, k.sd); noiseSrc(t, t + k.sd + 0.02, filt("highpass", 1400, 0, g2)); break; }
+    case 3: { const g = vca(t, out); const b = filt("bandpass", 1150, 1.4, g);
+      [0, 0.011, 0.022].forEach(d => { g.gain.setValueAtTime(0.55, t + d); g.gain.exponentialRampToValueAtTime(0.05, t + d + 0.009); });
+      g.gain.setValueAtTime(0.4, t + 0.031); g.gain.exponentialRampToValueAtTime(0.0008, t + 0.2); noiseSrc(t, t + 0.25, b); break; }
+    case 4: case 5: case 6: { const dec = i === 4 ? k.hd : i === 5 ? 0.32 : 0.06; const g = vca(t, out); hit(g, t, i === 6 ? 0.15 : 0.22, dec);
+      noiseSrc(t, t + dec + 0.02, filt("highpass", k.hp, 0, g)); break; }
+    case 7: { const g = vca(t, out); hit(g, t, 0.3, 0.035); osc("triangle", 1700, t, t + 0.05, g); break; }
+    case 9: case 10: { const f0 = i === 9 ? 120 : 190; const g = vca(t, out); hit(g, t, 0.6, 0.3);
+      const o = osc("sine", f0, t, t + 0.32, g); o.frequency.exponentialRampToValueAtTime(f0 * 0.72, t + 0.25); break; }
+    case 11: case 12: { const dec = i === 11 ? 1.3 : 0.9; const g = vca(t, out); hit(g, t, i === 11 ? 0.28 : 0.18, dec);
+      noiseSrc(t, t + dec, filt(i === 11 ? "highpass" : "bandpass", i === 11 ? 4200 : 7600, i === 11 ? 0 : 0.8, g)); break; }
+    case 13: { const g = vca(t, out); g.gain.linearRampToValueAtTime(0.16, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0008, t + 0.1);
+      noiseSrc(t, t + 0.12, filt("highpass", 6500, 0, g)); break; }
+    case 14: { const g = vca(t, out); hit(g, t, 0.5, 0.22); const o = osc("sine", 310, t, t + 0.24, g); o.frequency.exponentialRampToValueAtTime(255, t + 0.15); break; }
+    case 15: { const g = vca(t, out); hit(g, t, 0.25, 0.32); const b = filt("bandpass", 800, 2.5, g); osc("square", 545, t, t + 0.33, b); osc("square", 815, t, t + 0.33, b); break; }
+  }
+}
+const lastF = [0, 0, 0];
+function synthNote(ti, m, t, steps, o) {
+  const p = SYNTHS[state.tracks[ti].preset], out = G.trk[ti], f = mtof(m + 12 * (p.oct || 0));
+  const sd = 60 / state.bpm / 4, dur = Math.max(0.05, (steps || p.len) * sd * 0.92);
+  o = o || {};
+  switch (p.t) {
+    case "sub": { const g = vca(t, out); g.gain.linearRampToValueAtTime(0.85, t + 0.006); g.gain.setTargetAtTime(0.0008, t + 0.01, p.dec / 3.5);
+      const s = osc("sine", f * 1.7, t, t + p.dec + 0.3, g); s.frequency.exponentialRampToValueAtTime(f, t + 0.05);
+      const h = vca(t, out); h.gain.linearRampToValueAtTime(0.12, t + 0.006); h.gain.setTargetAtTime(0.0008, t + 0.01, p.dec / 4); osc("triangle", f * 2, t, t + p.dec, h); break; }
+    case "acid": { const g = vca(t, out); const lp = filt("lowpass", p.cut, 13, g); const acc = o.acc ? 1.6 : 1;
+      const peak = (p.cut + 1700 * acc) * state.cutMod;
+      lp.frequency.setValueAtTime(Math.max(peak, 200), t); lp.frequency.exponentialRampToValueAtTime(Math.max(p.cut * state.cutMod, 120), t + 0.2);
+      g.gain.linearRampToValueAtTime(o.acc ? 0.55 : 0.38, t + 0.004); g.gain.setValueAtTime(o.acc ? 0.55 : 0.38, t + dur); g.gain.linearRampToValueAtTime(0.0001, t + dur + 0.04);
+      const s = osc("sawtooth", o.sld && lastF[ti] ? lastF[ti] : f, t, t + dur + 0.06, lp);
+      if (o.sld && lastF[ti]) s.frequency.exponentialRampToValueAtTime(f, t + 0.07); lastF[ti] = f; break; }
+    case "fm": { const g = vca(t, p.lp ? filt("lowpass", p.lp, 0, out) : out);
+      g.gain.linearRampToValueAtTime(0.28, t + 0.005); g.gain.setTargetAtTime(0.1, t + 0.01, p.dec / 3); g.gain.setTargetAtTime(0.0008, t + dur, 0.12);
+      const car = osc("sine", f, t, t + dur + 0.8, g); const mg = AC.createGain(); mg.gain.setValueAtTime(p.idx * f, t);
+      mg.gain.exponentialRampToValueAtTime(Math.max(p.idx * f * 0.15, 1), t + p.dec); mg.connect(car.frequency); osc("sine", f * p.ratio, t, t + dur + 0.8, mg); break; }
+    case "organ": { const g = vca(t, out); g.gain.linearRampToValueAtTime(0.18, t + 0.005); g.gain.setValueAtTime(0.18, t + dur); g.gain.linearRampToValueAtTime(0.0001, t + dur + 0.08);
+      [[1, 1], [2, 0.6], [4, 0.3], [3, 0.25]].forEach(([r, a]) => { const h = AC.createGain(); h.gain.value = a; h.connect(g); osc("sine", f * r, t, t + dur + 0.1, h); }); break; }
+    case "flute": { const g = vca(t, out); g.gain.linearRampToValueAtTime(0.32, t + 0.07); g.gain.setValueAtTime(0.3, t + dur); g.gain.setTargetAtTime(0.0008, t + dur, 0.06);
+      const o1 = osc("triangle", f, t, t + dur + 0.4, g); const lfo = AC.createOscillator(); lfo.frequency.value = 5.2; const lg = AC.createGain();
+      lg.gain.setValueAtTime(0, t); lg.gain.linearRampToValueAtTime(f * 0.007, t + 0.35); lfo.connect(lg); lg.connect(o1.frequency); lfo.start(t); lfo.stop(t + dur + 0.4);
+      const b = vca(t, out); b.gain.linearRampToValueAtTime(0.05, t + 0.03); b.gain.setTargetAtTime(0.0008, t + 0.12, 0.08); noiseSrc(t, t + dur, filt("bandpass", f * 2, 2, b)); break; }
+    case "pad": { const g = vca(t, filt("lowpass", 1700, 0, out)); g.gain.linearRampToValueAtTime(0.16, t + 0.4); g.gain.setValueAtTime(0.16, t + dur); g.gain.setTargetAtTime(0.0008, t + dur, 0.35);
+      [-7, 7].forEach(c => { const s = osc("sawtooth", f, t, t + dur + 1.6, g); s.detune.value = c; }); break; }
+    case "choir": { const g = vca(t, out); g.gain.linearRampToValueAtTime(0.3, t + 0.12); g.gain.setValueAtTime(0.3, t + dur); g.gain.setTargetAtTime(0.0008, t + dur, 0.15);
+      const mix = AC.createGain(); mix.connect(g); const s = osc("sawtooth", f, t, t + dur + 0.6, filt("bandpass", 720, 7, mix)); osc("sawtooth", f, t, t + dur + 0.6, filt("bandpass", 1180, 8, mix)); break; }
+  }
+}
+function isMono(ti) { const t = SYNTHS[state.tracks[ti].preset].t; return t === "sub" || t === "acid"; }
+
+/* ---------------- notes, chords ---------------- */
+function keyMidi(ti, n) { return 53 + WHITE[n - 1] + 12 * state.tracks[ti].oct; }
+function topMidi(ti, idx) { return 53 + WHITE[BLACK_AFTER[idx]] + 1 + 12 * state.tracks[ti].oct; }
+function chordNotes(root, mode) {
+  if (mode === "OFF") return [root];
+  const sc = SCALES[state.scale], rel = ((root - state.key) % 12 + 12) % 12;
+  let deg = sc.indexOf(rel); if (deg < 0) deg = sc.reduce((b, x, i) => (x < rel ? i : b), 0);
+  const base = root - rel;
+  const pick = mode === "TRIAD" ? [0, 2, 4] : mode === "7TH" ? [0, 2, 4, 6] : [0, 2, 6, 8];
+  return pick.map(k => { const d = deg + k; return base + sc[d % 7] + 12 * Math.floor(d / 7); });
+}
+
+/* ---------------- sequencer ---------------- */
+const SCHED = { next: 0, step: 0, timer: null, queue: [], ui: null, stopUntil: -1, stutBase: -1, stutLeft: 0 };
+const stepDur = () => 60 / state.bpm / 4;
+function playStep(s, t) {
+  if (t < SCHED.stopUntil) return;
+  const src = SCHED.stutLeft > 0 ? SCHED.stutBase + (s % 4) : s;
+  state.tracks.forEach((tr, ti) => {
+    const st = tr.steps[src]; if (!st.length) return;
+    if (ti === 3) st.forEach(d => drum(d, t));
+    else { const ns = isMono(ti) ? [st.reduce((a, b) => (a.m <= b.m ? a : b))] : st.slice(0, 4); ns.forEach(n => synthNote(ti, n.m, t, n.len, n)); }
+  });
+}
+function barStart(t) {
+  if (SCHED.stutLeft > 0) SCHED.stutLeft--;
+  if (state.fx.echoUntilBar !== undefined) { state.fx.echoUntilBar--; if (state.fx.echoUntilBar < 0) { delete state.fx.echoUntilBar; applyFx(); } }
+  if (state.chain.length) { const sec = state.sections[state.chain[state.chainPos % state.chain.length]]; if (sec) loadSection(sec); state.chainPos = (state.chainPos + 1) % state.chain.length; }
+  if (state.sweep) { SCHED.bar = (SCHED.bar || 0) + 1; state.cutMod = 0.45 + 0.75 * (1 + Math.sin(SCHED.bar * Math.PI / 4)) / 2; }
+}
+function tick() {
+  if (!AC) return; const ahead = AC.currentTime + 0.12; let guard = 0;
+  while (SCHED.next < ahead && guard++ < 64) {
+    if (SCHED.step === 0) barStart(SCHED.next);
+    const sw = SCHED.step % 2 ? (state.swing - 50) / 50 * stepDur() : 0;
+    playStep(SCHED.step, SCHED.next + sw);
+    SCHED.queue.push({ s: SCHED.step, t: SCHED.next + sw });
+    SCHED.next += stepDur(); SCHED.step = (SCHED.step + 1) % 16;
+  }
+  let cur = state.step; while (SCHED.queue.length && SCHED.queue[0].t <= AC.currentTime) cur = SCHED.queue.shift().s;
+  if (cur !== state.step) { state.step = cur; renderScreen(); renderLeds(); }
+}
+function startPlay() { audio(); if (state.playing) return; state.playing = true; SCHED.step = 0; SCHED.queue = []; SCHED.next = AC.currentTime + 0.06; SCHED.stopUntil = -1;
+  if (state.chain.length) { const sec = state.sections[state.chain[0]]; if (sec) loadSection(sec); state.chainPos = 0; }
+  SCHED.timer = setInterval(tick, 25); tick(); }
+function stopPlay() { if (SCHED.timer) clearInterval(SCHED.timer); SCHED.timer = null; state.playing = false; state.rec = false; state.step = -1; SCHED.stutLeft = 0; }
+function nowStep() {
+  if (!state.playing || !AC) return 0; const now = AC.currentTime; let best = 0, bd = 1e9;
+  const cand = SCHED.queue.slice(); cand.push({ s: state.step < 0 ? 0 : state.step, t: now });
+  cand.forEach(c => { const d = Math.abs(c.t - now); if (d < bd) { bd = d; best = c.s; } });
+  return best;
+}
+function trackEmpty(ti) { return state.tracks[ti].steps.every(s => !s.length); }
+function projectEmpty() { return state.tracks.every((_, i) => trackEmpty(i)); }
+
+/* ---------------- sections ---------------- */
+function snap() { return state.tracks.map(t => ({ steps: t.steps.map(s => s.map(x => (typeof x === "object" ? Object.assign({}, x) : x))), mute: t.mute })); }
+function loadSection(sec) { sec.forEach((tr, i) => { state.tracks[i].steps = tr.steps.map(s => s.map(x => (typeof x === "object" ? Object.assign({}, x) : x))); state.tracks[i].mute = tr.mute; }); applyMix(); }
+
+/* ---------------- screen ---------------- */
+let msgTimer = null;
+function say(m) { state.msg = m; clearTimeout(msgTimer); msgTimer = setTimeout(() => { state.msg = ""; renderScreen(); }, 1600); renderScreen(); }
+function txt(x, y, t, fill, size, anchor, bold) { return '<text x="' + x + '" y="' + y + '" font-size="' + size + '" fill="' + fill + '" text-anchor="' + (anchor || "start") + '"' + (bold ? ' class="f"' : "") + ">" + esc(t) + "</text>"; }
+function trackName(i) { return i === 3 ? state.kit + " KIT" : SYNTHS[state.tracks[i].preset].n; }
+function layerView() {
+  const L = state.layer, sel = state.sel, tr = state.tracks[sel]; const lab = [], on = []; let title = L, dials = ["", "", "", ""];
+  for (let n = 1; n <= 16; n++) { lab.push(String(n)); on.push(false); }
+  if (L === "SEQ") {
+    if (sel === 3) { title = "SEQ · " + DRUM_NAMES[state.seqSound]; for (let i = 0; i < 16; i++) on[i] = tr.steps[i].includes(state.seqSound); }
+    else { title = "SEQ · NOTE " + NN[keyMidi(sel, state.seqNote) % 12]; for (let i = 0; i < 16; i++) on[i] = tr.steps[i].length > 0; }
+    dials = [sel === 3 ? "SOUND" : "NOTE", "DIV", "SWING", "LENGTH"];
+  } else if (L === "SEL") {
+    title = "KEY " + NN[state.key] + " · " + state.scale + " · " + state.tracks[sel].chord;
+    for (let i = 0; i < 16; i++) { lab[i] = NN[(53 + WHITE[i]) % 12]; on[i] = (53 + WHITE[i]) % 12 === state.key; }
+    dials = ["CHORD", "SCALE", "KEYS", "TRANSP"];
+  } else if (L === "GLO") {
+    title = "MIX";
+    for (let i = 0; i < 16; i++) lab[i] = i < 4 ? "M" + (i + 1) : i < 8 ? "S" + (i - 3) : i === 8 ? "FILL" : i === 15 ? "TAP" : "";
+    for (let i = 0; i < 4; i++) { on[i] = state.tracks[i].mute; on[i + 4] = state.tracks[i].solo; }
+    dials = ["LVL 1", "LVL 2", "LVL 3", "LVL 4"];
+  } else if (L === "FX") {
+    title = "FX PUNCH-INS";
+    for (let i = 0; i < 16; i++) lab[i] = ({ 0: "LOOP", 5: "REV", 6: "TAPE", 8: "FILT", 14: "ECHO" })[i] || "·";
+    on[0] = SCHED.stutLeft > 0; on[14] = state.fx.echoUntilBar !== undefined;
+    dials = ["FILTER", "DUST", "DUCK", "TRK FLT"];
+  } else if (L === "SAVE") {
+    title = "SONG " + (state.chain.length ? state.chain.map(c => "ABCD"[c]).join(" ") : "");
+    for (let i = 0; i < 16; i++) lab[i] = i < 4 ? "▶" + "ABCD"[i] : i < 8 ? "●" + "ABCD"[i - 4] : i === 12 ? "LP/SG" : i === 13 ? "RECSG" : "";
+    for (let i = 0; i < 4; i++) { on[i] = state.chain.includes(i); on[i + 4] = !!state.sections[i]; }
+  }
+  let s = txt(230, 70, title, COL[sel], 8.5, "start", true);
+  for (let i = 0; i < 16; i++) { const r = Math.floor(i / 4), c = i % 4, x = 229 + c * 36, y = 75 + r * 26;
+    s += '<rect x="' + x + '" y="' + y + '" width="34" height="23" rx="3" fill="' + (on[i] ? COL[sel] : "#262626") + '"' + (i % 4 === 0 ? ' stroke="#fff" stroke-width="0.7"' : "") + "/>";
+    s += txt(x + 17, y + 15, lab[i], on[i] ? "#000" : "#ddd", 7.5, "middle", true); }
+  dials.forEach((d, i) => { s += txt(246 + i * 36, 187, d, COL[sel], 6.8, "middle", true); });
+  return s;
+}
+function renderScreen() {
+  const g = $("sl-screen"); if (!g) return;
+  let s = '<rect x="226" y="46" width="148" height="160" rx="6" fill="#0b0b0b"/>';
+  s += txt(230, 57, (state.playing ? "▶ " : "■ ") + state.bpm + " BPM · SW " + state.swing + "%", "#fff", 8, "start", true);
+  if (state.rec || state.armed) s += '<circle cx="366" cy="54" r="3.5" fill="#ef4444"/>';
+  else s += txt(370, 57, state.playing && state.step >= 0 ? (Math.floor(state.step / 4) + 1) + "." + (state.step % 4 + 1) : "", "#fff", 8, "end");
+  if (state.layer) s += layerView();
+  else {
+    const anySolo = state.tracks.some(t => t.solo);
+    state.tracks.forEach((tr, i) => { const y0 = 62 + i * 31, selr = i === state.sel, heard = !tr.mute && (!anySolo || tr.solo);
+      s += '<g opacity="' + (heard ? 1 : 0.38) + '"><rect x="228" y="' + y0 + '" width="144" height="28" rx="3" fill="' + (selr ? "#262626" : "#141414") + '" stroke="' + COL[i] + '" stroke-width="' + (selr ? 1.3 : 0) + '"/>';
+      s += '<rect x="229.5" y="' + (y0 + 1.5) + '" width="3" height="25" rx="1" fill="' + COL[i] + '"/>';
+      s += txt(236, y0 + 11, (i + 1) + " " + trackName(i), "#fff", 8.3, "start", selr);
+      const badge = (tr.mute ? "M " : "") + (tr.solo ? "S " : "") + (selr && state.rec ? "REC" : "");
+      if (badge) s += txt(370, y0 + 11, badge.trim(), tr.solo ? COL[i] : selr && state.rec ? "#ef4444" : "#aaa", 7, "end", true);
+      for (let j = 0; j < 16; j++) { const x = 236 + j * 8.1, has = tr.steps[j].length > 0, ph = state.playing && j === state.step;
+        s += '<rect x="' + x.toFixed(1) + '" y="' + (y0 + 16) + '" width="6.6" height="7.5" rx="1" fill="' + (ph ? "#fff" : has ? COL[i] : "#383838") + '"/>'; }
+      s += "</g>"; });
+  }
+  if (state.msg) s += '<rect x="228" y="191" width="144" height="13" rx="2" fill="#fff"/>' + txt(300, 200.5, state.msg, "#000", 7.8, "middle", true);
+  g.innerHTML = s;
+}
+function led(btn, on) { const l = $(btn + "-led"); if (l) l.setAttribute("fill", on ? (btn === "btn-rec" ? "#ef4444" : COL[state.sel]) : "#fff"); }
+function renderLeds() {
+  ["SEQ", "SEL", "GLO", "FX", "SAVE"].forEach(L => led("btn-" + L.toLowerCase(), state.layer === L));
+  led("btn-play", state.playing); led("btn-rec", state.rec || state.armed);
+  for (let n = 1; n <= 16; n++) { const k = $("kled-" + n); if (!k) continue; let lit = false; const i = n - 1, tr = state.tracks[state.sel];
+    if (state.layer === "SEQ") lit = state.sel === 3 ? tr.steps[i].includes(state.seqSound) : tr.steps[i].length > 0;
+    else if (state.layer === "GLO") lit = i < 4 ? !state.tracks[i].mute : i < 8 ? state.tracks[i - 4].solo : false;
+    k.setAttribute("fill", lit ? COL[state.sel] : "#9a9a9a");
+    k.setAttribute("width", state.playing && i === state.step ? 8 : 4); }
+  for (let n = 1; n <= 16; n++) { const d = $("dn-" + n); if (d) d.style.display = state.sel === 3 && !state.layer ? "" : "none"; }
+}
+function renderAll() { renderScreen(); renderLeds(); }
+
+/* ---------------- actions ---------------- */
+const knobSpin = {};
+function spin(id, steps) { const p = $(id + "-ptr"); if (p) { knobSpin[id] = (knobSpin[id] || 0) + 360 / steps; p.style.transform = "rotate(" + knobSpin[id] + "deg)"; } }
+function playKey(ti, n, isTop, idx) {
+  if (ti === 3) { const d = isTop ? BLACK_AFTER[idx] : n - 1; drum(d, AC.currentTime); S.drums.add(d); return { drum: d }; }
+  let notes;
+  if (isTop) { if (state.tracks[ti].chord !== "OFF") { say("CHORD MOD (REAL FM-1)"); return null; } notes = [topMidi(ti, idx)]; }
+  else notes = chordNotes(keyMidi(ti, n), state.tracks[ti].chord);
+  const ns = isMono(ti) ? [notes[0]] : notes;
+  ns.forEach(m => synthNote(ti, m, AC.currentTime, null, {}));
+  S.played[ti]++; if (state.tracks[ti].chord !== "OFF" && !isTop) S.chordPlayed++;
+  return { notes: ns };
+}
+function record(ti, res) {
+  if (!res) return; const s = nowStep(), st = state.tracks[ti].steps[s];
+  if (ti === 3) { if (!st.includes(res.drum)) st.push(res.drum); }
+  else res.notes.forEach(m => { if (!st.some(x => x.m === m) && st.length < 4) st.push({ m }); });
+}
+function keyPress(id) {
+  const isTop = id.startsWith("key-t"), num = +id.slice(5), ti = state.sel, tr = state.tracks[ti];
+  if (state.layer) { if (isTop) { say("TOP KEYS: REAL FM-1"); return; } layerKey(num); return; }
+  const res = playKey(ti, num, isTop, num - 1);
+  if (state.armed && !state.playing) { state.armed = false; state.rec = true; startPlay(); record(ti, res); return; }
+  if (state.rec && state.playing) record(ti, res);
+}
+function toggleStep(arr, v) { const k = arr.indexOf(v); if (k >= 0) arr.splice(k, 1); else arr.push(v); }
+function layerKey(n) {
+  const i = n - 1, ti = state.sel, tr = state.tracks[ti];
+  switch (state.layer) {
+    case "SEQ":
+      if (ti === 3) { toggleStep(tr.steps[i], state.seqSound); if (tr.steps[i].includes(state.seqSound)) drum(state.seqSound, AC.currentTime); }
+      else { const m = keyMidi(ti, state.seqNote), st = tr.steps[i]; const k = st.findIndex(x => x.m === m);
+        if (k >= 0) st.splice(k, 1); else { chordNotes(m, tr.chord).slice(0, isMono(ti) ? 1 : 4).forEach(mm => st.push({ m: mm })); synthNote(ti, m, AC.currentTime, null, {}); } }
+      break;
+    case "SEL": state.key = (53 + WHITE[i]) % 12; say("KEY " + NN[state.key]); playKey(ti, n, false, 0); break;
+    case "GLO":
+      if (i < 4) { state.tracks[i].mute = !state.tracks[i].mute; say((state.tracks[i].mute ? "MUTE " : "UNMUTE ") + (i + 1)); }
+      else if (i < 8) { state.tracks[i - 4].solo = !state.tracks[i - 4].solo; say((state.tracks[i - 4].solo ? "SOLO " : "UNSOLO ") + (i - 3)); }
+      else if (i === 15) { const now = performance.now(); if (state.lastTap && now - state.lastTap < 2000) { state.bpm = Math.max(40, Math.min(240, Math.round(60000 / (now - state.lastTap)))); applyFx(); say("TAP " + state.bpm + " BPM"); } else say("TAP AGAIN"); state.lastTap = now; }
+      else say("FILL: REAL FM-1");
+      applyMix(); break;
+    case "FX": fxPunch(i); break;
+    case "SAVE":
+      if (i >= 4 && i < 8) { state.sections[i - 4] = snap(); say("SECTION " + "ABCD"[i - 4] + " SAVED"); }
+      else if (i < 4) { if (!state.sections[i]) { say("SECTION " + "ABCD"[i] + " EMPTY"); break; }
+        if (state.chainFresh) { state.chain = [i]; state.chainFresh = false; } else if (state.chain.length < 8) state.chain.push(i);
+        if (!state.playing) { loadSection(state.sections[state.chain[0]]); state.chainPos = 0; }
+        say("SONG " + state.chain.map(c => "ABCD"[c]).join(" ")); }
+      else say("SONG PAGE: REAL FM-1");
+      break;
+  }
+}
+function fxPunch(i) {
+  const t = AC.currentTime, bar = stepDur() * 16;
+  if (i === 0) { SCHED.stutBase = Math.max(0, state.step - (state.step % 4)); SCHED.stutLeft = 2; S.stut++; say("LOOP 1/4"); }
+  else if (i === 6) { if (!state.playing) { say("PRESS PLAY FIRST"); return; } G.master.gain.cancelScheduledValues(t); G.master.gain.setValueAtTime(state.vol, t);
+    G.master.gain.linearRampToValueAtTime(0.0001, t + 0.7); G.filter.frequency.setTargetAtTime(250, t, 0.2); SCHED.stopUntil = t + bar;
+    setTimeout(() => { if (!AC) return; G.master.gain.cancelScheduledValues(AC.currentTime); G.master.gain.setTargetAtTime(state.vol, AC.currentTime, 0.05); applyFx(); }, bar * 1000);
+    S.tape++; say("TAPE STOP"); }
+  else if (i === 8) { G.filter.frequency.cancelScheduledValues(t); G.filter.frequency.setValueAtTime(16000, t); G.filter.frequency.exponentialRampToValueAtTime(380, t + bar / 2);
+    G.filter.frequency.exponentialRampToValueAtTime([18000, 6000, 2500, 1000][state.cut], t + bar); S.filt++; say("FILTER SWEEP"); }
+  else if (i === 14) { for (let k = 0; k < 4; k++) G.ds[k].gain.value = 0.55; state.fx.echoUntilBar = 1; S.echo++; say("ECHO THROW"); }
+  else if (i === 5) say("REVERSE: REAL FM-1");
+  else say("MORE ON THE REAL FM-1");
+}
+function knob(n) {
+  const id = "ctl-knob" + n, ti = state.sel, tr = state.tracks[ti]; spin(id, 6);
+  if (state.layer === "SEQ") {
+    if (n === 1) { if (ti === 3) { state.seqSound = (state.seqSound + 1) % 16; drum(state.seqSound, AC.currentTime); say(DRUM_NAMES[state.seqSound]); }
+      else { state.seqNote = state.seqNote % 16 + 1; synthNote(ti, keyMidi(ti, state.seqNote), AC.currentTime, null, {}); say("NOTE " + NN[keyMidi(ti, state.seqNote) % 12]); } }
+    else if (n === 3) { state.swing = [50, 54, 58, 62, 66][([50, 54, 58, 62, 66].indexOf(state.swing) + 1) % 5]; say("SWING " + state.swing + "%"); }
+    else say(["", "", "DIV 1/16", "", "LENGTH 16"][n]);
+  } else if (state.layer === "SEL") {
+    if (n === 1) { tr.chord = CHORDS[(CHORDS.indexOf(tr.chord) + 1) % 4]; say("CHORD " + tr.chord); }
+    else if (n === 2) { state.scale = SCALE_ORDER[(SCALE_ORDER.indexOf(state.scale) + 1) % SCALE_ORDER.length]; say("SCALE " + state.scale); }
+    else say(n === 3 ? "KEYS: REAL FM-1" : "TRANSPOSE: REAL FM-1");
+  } else if (state.layer === "GLO") { const t = state.tracks[n - 1]; t.level = [1, 0.75, 0.5, 0.25][([1, 0.75, 0.5, 0.25].indexOf(t.level) + 1) % 4]; applyMix(); say("LEVEL " + n + " " + Math.round(t.level * 100) + "%"); }
+  else if (state.layer === "FX") {
+    if (n === 1) { state.cut = (state.cut + 1) % 4; say("FILTER " + ["OPEN", "WARM", "DARK", "MUFFLED"][state.cut]); }
+    else if (n === 2) { state.dust = (state.dust + 1) % 4; say("DUST " + state.dust); }
+    else if (n === 3) { state.duck = !state.duck; say("DUCK " + (state.duck ? "ON" : "OFF")); }
+    else say("TRACK FILTER: REAL FM-1");
+    applyFx();
+  } else {
+    if (n === 1) { state.swing = [50, 54, 58, 62, 66][([50, 54, 58, 62, 66].indexOf(state.swing) + 1) % 5]; say("SWING " + state.swing + "%"); }
+    else if (n === 2) { tr.level = [1, 0.75, 0.5, 0.25][([1, 0.75, 0.5, 0.25].indexOf(tr.level) + 1) % 4]; applyMix(); say("LEVEL " + Math.round(tr.level * 100) + "%"); }
+    else say(n === 3 ? "STEPS 16" : "PAN: REAL FM-1");
+  }
+}
+function buttonPress(id) {
+  const L = { "btn-seq": "SEQ", "btn-sel": "SEL", "btn-glo": "GLO", "btn-fx": "FX", "btn-save": "SAVE" }[id];
+  if (L) { state.layer = state.layer === L ? null : L; if (L === "SAVE" && state.layer) state.chainFresh = true;
+    if (state.layer) say(L + " HELD"); return; }
+  switch (id) {
+    case "ctl-algorithm": state.sel = (state.sel + 1) % 4; spin(id, 4); say("TRACK " + (state.sel + 1) + " · " + trackName(state.sel)); break;
+    case "ctl-presets": spin(id, 8);
+      if (state.sel === 3) { state.kit = KIT_ORDER[(KIT_ORDER.indexOf(state.kit) + 1) % KIT_ORDER.length]; applyKit(); S.kitChanges++; say(state.kit + " KIT"); drum(0, AC.currentTime); drum(4, AC.currentTime + 0.18); }
+      else { const t = state.tracks[state.sel]; t.preset = (t.preset + 1) % SYNTHS.length; say(SYNTHS[t.preset].n); synthNote(state.sel, keyMidi(state.sel, 3), AC.currentTime, null, {}); }
+      break;
+    case "ctl-select": state.bpm = TEMPOS[(TEMPOS.indexOf(state.bpm) + 1) % TEMPOS.length] || 90; spin(id, 10); applyFx(); say(state.bpm + " BPM"); break;
+    case "ctl-master": state.vol = [0.7, 0.9, 0.3, 0.5][([0.7, 0.9, 0.3, 0.5].indexOf(state.vol) + 1) % 4]; spin(id, 4); applyMix(); say("VOLUME " + Math.round(state.vol * 100)); break;
+    case "ctl-knob1": case "ctl-knob2": case "ctl-knob3": case "ctl-knob4": knob(+id.slice(-1)); break;
+    case "btn-octdown": case "btn-octup": if (state.sel === 3) { say("DRUMS: HOLD FOR GHOST/HARD"); break; }
+      { const t = state.tracks[state.sel]; t.oct = Math.max(-3, Math.min(3, t.oct + (id === "btn-octup" ? 1 : -1))); say("OCTAVE " + (t.oct > 0 ? "+" : "") + t.oct); } break;
+    case "btn-play": if (state.playing) { stopPlay(); state.armed = false; } else startPlay(); break;
+    case "btn-home": state.layer = null; say("TRACKS"); break;
+    case "btn-env": say("ENV PAGES"); break;
+    case "btn-lfo": say("LFO PAGES"); break;
+    case "btn-edit": say("ENGINE PAGES"); break;
+    case "btn-arp": say("ARP PAGES"); break;
+  }
+}
+function recClick() {
+  audio();
+  if (state.playing) { state.rec = !state.rec; say(state.rec ? "RECORDING" : "LOOP KEPT"); }
+  else { state.armed = !state.armed; say(state.armed ? "REC READY" : "REC OFF"); }
+  renderAll(); progress();
+}
+function clearTrack() { state.tracks[state.sel].steps = emptySteps(); say("ERASED"); renderAll(); progress(); }
+
+/* ---------------- explore cards ---------------- */
+const CARDS = {
+  "ctl-master": ["MASTER", "Volume for the whole groovebox."],
+  "ctl-select": ["SELECT", "On the tracks screen it sets the <b>tempo</b> (40–240 BPM). Inside a page it flips pages. Here, each click steps to the next tempo."],
+  "ctl-presets": ["PRESETS", "The <b>sound</b> of the selected track — or the <b>drum kit</b> on track 4. The real one has 153 sounds and 37 kits; this page has a handful."],
+  "ctl-algorithm": ["ALGORITHM", "<b>Picks the track</b>: 1, 2, 3 are synths, 4 is drums. Almost everything else acts on the track you picked. Its colour lights up on the screen."],
+  "ctl-knob1": ["KNOB 1", "On the tracks screen: <b>swing</b>. Inside a held layer it changes job — the bottom of the screen names it."],
+  "ctl-knob2": ["KNOB 2", "On the tracks screen: the selected track's <b>level</b>. Inside a layer: the second dial on screen."],
+  "ctl-knob3": ["KNOB 3", "On the tracks screen: the track's <b>length in steps</b>. Inside a layer: the third dial."],
+  "ctl-knob4": ["KNOB 4", "On the tracks screen: <b>pan</b> (left/right). Inside a layer: the fourth dial."],
+  "btn-octdown": ["OCT−", "Synth tracks: one octave lower. Drum track: hold for quiet <b>ghost</b> hits. EDIT + OCT− = <b>undo</b>."],
+  "btn-octup": ["OCT+", "Synth tracks: one octave higher. Drum track: hold for <b>hard</b> hits. EDIT + OCT+ = redo."],
+  "btn-fx": ["FX", "Tap: effect pages. <b>Hold</b>: punch-in effects on the keys (loop, tape stop, filter sweep, echo) and FILTER · DUST · DUCK on the knobs. Here, one click holds it for you."],
+  "btn-sel": ["SEL", "Tap: scale pages. <b>Hold</b>: key and chords — tap a key to set the key, KNOB 1 picks chords. Then one finger plays a whole chord."],
+  "btn-env": ["ENV", "The selected sound's envelope pages: how it starts and fades. No layer."],
+  "btn-lfo": ["LFO", "Wobble pages for the selected sound. No layer."],
+  "btn-edit": ["EDIT", "Tap: the <b>engine</b> pages — 12 engines (analog, FM, organ, granular, sampler…). Hold: erase — hold a key to wipe it while it plays."],
+  "btn-glo": ["GLO", "Tap: global settings. <b>Hold</b>: the mixer — keys 1–4 mute, 5–8 solo, 16 tap tempo, the 4 knobs are the 4 track levels."],
+  "btn-home": ["HOME", "Back to the tracks screen, and lets go of any held layer here. Hold on the real one: the menu (screen, lights, USB audio)."],
+  "btn-save": ["SAVE", "Tap: song screen and save pages. <b>Hold</b>: song mode — keys 5–8 store sections A–D, keys 1–4 play them, more taps chain them."],
+  "btn-arp": ["ARP", "Tap: arpeggiator pages. Hold: note repeat — hold a key for drum rolls."],
+  "btn-seq": ["SEQ", "Tap: sequencer pages. <b>Hold</b>: the 16 bottom keys become the 16 steps. Tap a key to place a hit; KNOB 1 picks which sound."],
+  "btn-play": ["PLAY / STOP", "Starts and stops <b>all four tracks</b> together. Works inside any layer."],
+  "btn-rec": ["REC", "While playing: records the selected track <b>right away</b>, on top of what's there. Stopped: arms — your first note starts the loop. Hold it about 2 seconds: <b>clear</b> the track (hold it here too)."],
+  KEYBOT: ["Bottom keys", "Synth tracks: notes. Track 4: <b>16 drum sounds</b> (names under the keys). While a layer is held: 16 buttons."],
+  KEYTOP: ["Top keys", "Synth tracks: the in-between notes; with chords on they change the chord. Track 4: the same drum as the bottom key to their left."],
+};
+function exploreCard() {
+  return "<h2>Click anything on the panel</h2><p>Every control tells you its <b>SLOOP</b> job. The big idea: <b>tap</b> a button for its pages, <b>hold</b> it for a layer — the keys and knobs change job while it's held.</p>" +
+    '<p class="hear">On this page, one click "holds" a button for you (it glows). Click it again, or HOME, to let go. On the real FM-1, keep your finger on it.</p>' +
+    '<p class="note">Sounds here are our own lookalikes made in your browser — close in spirit, not SLOOP itself. Sound starts after your first click.</p>';
+}
+
+/* ---------------- lessons ---------------- */
+const BEAT = { 0: [0, 7, 10], 2: [4, 12], 4: [0, 2, 4, 6, 8, 10, 12, 14] };
+function ensureBeat() { const d = state.tracks[3].steps; if (trackEmpty(3)) Object.entries(BEAT).forEach(([snd, ix]) => ix.forEach(i => d[i].push(+snd))); }
+function ensureBass() { const b = state.tracks[0]; if (trackEmpty(0)) { b.steps[0] = [{ m: keyMidi(0, 3) }]; b.steps[8] = [{ m: keyMidi(0, 1) }]; } }
+function ensureChords() { const c = state.tracks[1]; if (trackEmpty(1)) { state.key = 9; c.chord = "9TH";
+  c.steps[0] = chordNotes(keyMidi(1, 3), "9TH").map(m => ({ m })); c.steps[8] = chordNotes(keyMidi(1, 1), "9TH").map(m => ({ m })); } }
+const keysLeft = (list, ok) => list.filter(n => !ok(n)).map(n => "key-b" + n);
+const has = (ti, step, snd) => state.tracks[ti].steps[step].includes(snd);
+const notes = ti => state.tracks[ti].steps.reduce((a, s) => a + s.length, 0);
+const CHAIN = [0, 0, 1, 0];
+function chainMatch() { if (state.chainFresh) return 0; const c = state.chain;
+  for (let k = Math.min(3, c.length); k > 0; k--) if (c.slice(-k).join() === CHAIN.slice(0, k).join()) return k; return 0; }
+const LESSONS = [
+  { title: "Lesson 1 · Meet your groovebox", setup: () => { newProject(); },
+    done: "Four tracks, four sounds — and on SLOOP they all play <b>at the same time</b>. That's what the stock firmware can't do. Next: build a drum loop.",
+    steps: [
+      { say: "Track 1 is picked. Press a few bottom keys.", hear: "808 BOOM — a deep, round bass", ring: () => ["key-b3", "key-b1", "key-b5"], done: () => S.played[0] >= 2 },
+      { say: "Click ALGORITHM to pick track 2.", hear: "the green row lights up on the screen", ring: () => ["ctl-algorithm"], done: () => state.sel === 1 },
+      { say: "Play some keys.", hear: "RHODES — a warm electric piano", ring: () => ["key-b3", "key-b5", "key-b7"], done: () => S.played[1] >= 2 },
+      { say: "ALGORITHM again → track 3.", hear: "the yellow row", ring: () => ["ctl-algorithm"], done: () => state.sel === 2 },
+      { say: "Play some keys.", hear: "LOFI FLUTE", ring: () => ["key-b10", "key-b12", "key-b14"], done: () => S.played[2] >= 2 },
+      { say: "ALGORITHM again → track 4, the drums.", hear: "drum names appear under the keys", ring: () => ["ctl-algorithm"], done: () => state.sel === 3 },
+      { say: "Press keys 1, 3 and 5.", hear: "kick, snare, hat", ring: () => keysLeft([1, 3, 5], n => S.drums.has(n - 1)), done: () => [0, 2, 4].every(d => S.drums.has(d)) },
+      { say: "Click PRESETS for a new drum kit.", hear: "same keys, a different kit", ring: () => ["ctl-presets"], done: () => S.kitChanges >= 1 },
+    ] },
+  { title: "Lesson 2 · Your first drum loop", setup: () => { newProject(); },
+    done: "That's a real beat, and it keeps looping. Leave it running — next you'll lay bass on top.",
+    steps: [
+      { say: "Click ALGORITHM until track 4 (drums) is picked.", hear: "the orange row lights up", ring: () => ["ctl-algorithm"], done: () => state.sel === 3 },
+      { say: "Hold SEQ (here: click it once).", hear: "the screen turns into 16 tiles — the 16 steps", ring: () => ["btn-seq"], done: () => state.layer === "SEQ" },
+      { say: "The sound is KICK. Tap keys 1, 8 and 11.", hear: "each tap drops a kick on that step", ring: () => keysLeft([1, 8, 11], n => has(3, n - 1, 0)), done: () => [0, 7, 10].every(i => has(3, i, 0)) },
+      { say: "Click KNOB 1 twice — to SNARE.", hear: "the screen title says SNARE", ring: () => ["ctl-knob1"], done: () => state.seqSound === 2 },
+      { say: "Tap keys 5 and 13.", hear: "snares on beats 2 and 4", ring: () => keysLeft([5, 13], n => has(3, n - 1, 2)), done: () => [4, 12].every(i => has(3, i, 2)) },
+      { say: "Click KNOB 1 twice more — to HAT.", hear: "HAT", ring: () => ["ctl-knob1"], done: () => state.seqSound === 4 },
+      { say: "Tap keys 1, 3, 5, 7, 9, 11, 13, 15.", hear: "a ticking hat on every other step", ring: () => keysLeft([1, 3, 5, 7, 9, 11, 13, 15], n => has(3, n - 1, 4)), done: () => [0, 2, 4, 6, 8, 10, 12, 14].every(i => has(3, i, 4)) },
+      { say: "Press PLAY.", hear: "boom… tick… SNAP — on repeat", ring: () => ["btn-play"], done: () => state.playing },
+    ] },
+  { title: "Lesson 3 · Bass on top", setup: () => { ensureBeat(); state.layer = null; state.rec = false; },
+    done: "Drums and bass, <b>together</b>. Recording on SLOOP never stops the music — it just listens and adds.",
+    steps: [
+      { say: "Press HOME to let go of any held layer.", hear: "back to the tracks screen", ring: () => ["btn-home"], done: () => !state.layer },
+      { say: "Click ALGORITHM until track 1 (808 BOOM).", hear: "the blue row", ring: () => ["ctl-algorithm"], done: () => state.sel === 0 },
+      { say: "Press PLAY if the beat isn't running.", hear: "the drums loop", ring: () => ["btn-play"], done: () => state.playing },
+      { say: "Press REC. Recording starts at once.", hear: "a red REC badge on track 1", ring: () => ["btn-rec"], done: () => state.rec },
+      { say: "Play key 3, then key 1 a moment later. Timing is fixed for you.", hear: "the notes snap onto the beat", ring: () => ["key-b3", "key-b1"], done: () => notes(0) >= 2 },
+      { say: "Press REC again to stop recording.", hear: "your bass keeps looping with the drums", ring: () => ["btn-rec"], done: () => !state.rec && notes(0) >= 2 },
+    ] },
+  { title: "Lesson 4 · Chords that sound pro", setup: () => { ensureBeat(); ensureBass(); state.layer = null; state.rec = false; state.key = 0; state.tracks[1].chord = "OFF"; },
+    done: "One finger, a full jazzy chord, always in key. That's the trick behind most lo-fi and R&amp;B loops.",
+    steps: [
+      { say: "Click ALGORITHM until track 2 (RHODES).", hear: "the green row", ring: () => ["ctl-algorithm"], done: () => state.sel === 1 },
+      { say: "Hold SEL.", hear: "the keys become note names — the key picker", ring: () => ["btn-sel"], done: () => state.layer === "SEL" },
+      { say: "Tap key 3 — that sets the key to A.", hear: "KEY A", ring: () => ["key-b3"], done: () => state.key === 9 },
+      { say: "Click KNOB 1 until it says 9TH.", hear: "CHORD 9TH", ring: () => ["ctl-knob1"], done: () => state.tracks[1].chord === "9TH" },
+      { say: "Press HOME, then play key 3 by itself.", hear: "one finger, four notes — A minor 9", ring: () => (state.layer ? ["btn-home"] : ["key-b3"]), done: () => !state.layer && S.chordPlayed >= 1 },
+      { say: "Press PLAY if it's quiet, then REC.", hear: "red REC badge on track 2", ring: () => (state.playing ? ["btn-rec"] : ["btn-play"]), done: () => state.playing && state.rec },
+      { say: "Play key 3, then key 1 a moment later.", hear: "two chords join the loop", ring: () => ["key-b3", "key-b1"], done: () => notes(1) >= 2 },
+      { say: "Press REC to stop.", hear: "drums, bass and chords — all together", ring: () => ["btn-rec"], done: () => !state.rec },
+    ] },
+  { title: "Lesson 5 · Mix it, then play with it", setup: () => { ensureBeat(); ensureBass(); ensureChords(); state.layer = null; state.rec = false; },
+    done: "Mute, solo and punch-ins are how you <b>perform</b> a loop — the same loop, never boring.",
+    steps: [
+      { say: "Press PLAY if it's quiet.", hear: "the full loop", ring: () => ["btn-play"], done: () => state.playing },
+      { say: "Hold GLO — the mixer.", hear: "tiles M1–M4 and S1–S4", ring: () => ["btn-glo"], done: () => state.layer === "GLO" },
+      { say: "Tap key 4 — mute the drums.", hear: "the drums fade out; the loop keeps time", ring: () => ["key-b4"], done: () => state.tracks[3].mute },
+      { say: "Tap key 4 again — drums back in.", hear: "the drop!", ring: () => ["key-b4"], done: () => !state.tracks[3].mute },
+      { say: "Tap key 5 — solo track 1, the bass.", hear: "bass alone", ring: () => ["key-b5"], done: () => state.tracks[0].solo },
+      { say: "Tap key 5 again.", hear: "everyone back", ring: () => ["key-b5"], done: () => !state.tracks[0].solo },
+      { say: "Now hold FX.", hear: "punch-in tiles: LOOP, TAPE, FILT, ECHO", ring: () => ["btn-fx"], done: () => state.layer === "FX" },
+      { say: "Tap key 7 — TAPE STOP.", hear: "the whole loop winds down, then drops back in", ring: () => ["key-b7"], done: () => S.tape >= 1 },
+      { say: "Tap key 15 — ECHO THROW.", hear: "echo… echo… echo", ring: () => ["key-b15"], done: () => S.echo >= 1 },
+      { say: "Click KNOB 2 — DUST.", hear: "warm vinyl crackle under everything", ring: () => ["ctl-knob2"], done: () => state.dust > 0 },
+    ] },
+  { title: "Lesson 6 · Make it a song", setup: () => { ensureBeat(); ensureBass(); ensureChords(); state.layer = null; state.rec = false; state.chain = []; state.sections = [null, null, null, null]; state.sel = 0; },
+    done: "A A B A — that's song form. On the real FM-1, SAVE + key 14 even records the order you play.",
+    steps: [
+      { say: "Hold SAVE — song mode.", hear: "tiles ▶A–▶D and ●A–●D", ring: () => ["btn-save"], done: () => state.layer === "SAVE" },
+      { say: "Tap key 5 — this loop is now section A.", hear: "SECTION A SAVED", ring: () => ["key-b5"], done: () => !!state.sections[0] },
+      { say: "Press HOME, then ALGORITHM until track 4.", hear: "the drums row", ring: () => (state.layer ? ["btn-home"] : ["ctl-algorithm"]), done: () => !state.layer && state.sel === 3 },
+      { say: "Hold SEQ.", hear: "16 step tiles", ring: () => ["btn-seq"], done: () => state.layer === "SEQ" },
+      { say: "Click KNOB 1 three times — to CLAP.", hear: "CLAP", ring: () => ["ctl-knob1"], done: () => state.seqSound === 3 },
+      { say: "Tap keys 4 and 12 — handclaps.", hear: "the loop gets busier", ring: () => keysLeft([4, 12], n => has(3, n - 1, 3)), done: () => [3, 11].every(i => has(3, i, 3)) },
+      { say: "Hold SAVE again.", hear: "song mode", ring: () => ["btn-save"], done: () => state.layer === "SAVE" },
+      { say: "Tap key 6 — the clap version is section B.", hear: "SECTION B SAVED", ring: () => ["key-b6"], done: () => !!state.sections[1] },
+      { say: "Chain it: tap 1, 1, 2, 1.", hear: "the screen says SONG A A B A. Mis-tap? Click SAVE twice to start the chain over.", ring: () => ["key-b" + (CHAIN[chainMatch()] + 1)],
+        done: () => state.chain.slice(-4).join() === "0,0,1,0" },
+      { say: "Press PLAY if it's quiet.", hear: "A, A, B, A — round and round", ring: () => ["btn-play"], done: () => state.playing && state.chain.length >= 4 },
+    ] },
+];
+
+/* ---------------- vibes ---------------- */
+const VIBES = [
+  { id: "lofi", name: "Lo-fi chill", line: "Slow, dusty and warm.", bpm: 84, swing: 62, kit: "LO-FI", key: 9, scale: "MINOR",
+    syn: ["808 BOOM", "DUSTY PNO", "LOFI FLUTE"], oct: [-2, 0, 0], chord: ["OFF", "9TH", "OFF"], dust: 2, duck: false,
+    rs: [0.02, 0.35, 0.35, 0.06], ds: [0, 0.12, 0.3, 0],
+    drums: { 0: [0, 7, 10], 2: [4, 12], 4: [0, 2, 4, 6, 8, 10, 12, 14] }, t1: { 0: 3, 8: 1, 14: 2 }, t2: { 0: 3, 8: 1 }, t3: { 3: 14, 6: 12, 10: 13, 12: 10 },
+    recipe: ["SELECT down to <b>84 BPM</b>. On the tracks screen, KNOB 1 swing about <b>60%</b>.",
+      "Track 4, PRESETS → <b>LO-FI</b> kit. Hold SEQ: KICK keys 1·8·11 · SNARE 5·13 · HAT 1 3 5 7 9 11 13 15.",
+      "Track 1 (808 BOOM): PLAY, REC, play key 3, key 1 halfway, key 2 near the end. REC to stop.",
+      "Track 2 → PRESETS <b>DUSTY PNO</b>. Hold SEL: tap key 3 (key of A), KNOB 1 → <b>9TH</b>. Record key 3, then key 1.",
+      "Track 3 (LOFI FLUTE): record a few slow notes on keys 14, 12, 13, 10. Hold FX, KNOB 2 → <b>DUST</b>."] },
+  { id: "boombap", name: "Boom-bap", line: "Head-nod hip-hop.", bpm: 88, swing: 58, kit: "BOOMBAP", key: 2, scale: "MINOR",
+    syn: ["DEEP SUB", "DUSTY PNO", "VOICE AAH"], oct: [-2, 0, 0], chord: ["OFF", "7TH", "OFF"], dust: 1, duck: false,
+    rs: [0.02, 0.3, 0.4, 0.08], ds: [0, 0.08, 0.2, 0],
+    drums: { 0: [0, 7, 10], 2: [4, 12], 4: [0, 2, 4, 6, 8, 10, 12], 5: [14] }, t1: { 0: 6, 7: 6, 8: 2, 14: 3 }, t2: { 0: 6, 8: 9 }, t3: { 12: 13 },
+    recipe: ["SELECT to <b>88 BPM</b>, swing about <b>58%</b>. Track 4 → PRESETS <b>BOOMBAP</b>.",
+      "Hold SEQ: KICK 1·8·11 · SNARE 5·13 · HAT 1 3 5 7 9 11 13 · OPEN HAT 15.",
+      "Track 1 → a deep bass sound. Record keys 6, 6, 2, 3 (D, D, G, A) across the bar.",
+      "Track 2 → <b>DUSTY PNO</b>. Hold SEL: tap key 6 (key of D), KNOB 1 → <b>7TH</b>. Record key 6, then key 9 halfway.",
+      "Track 3: one voice or choir note near the end of the bar — a little “ahh.”"] },
+  { id: "house", name: "House", line: "Four on the floor; it breathes.", bpm: 122, swing: 54, kit: "HOUSE", key: 9, scale: "MINOR",
+    syn: ["DEEP SUB", "M1 PIANO", "HOUSE ORGN"], oct: [-2, 0, 1], chord: ["OFF", "7TH", "OFF"], dust: 0, duck: true,
+    rs: [0.02, 0.3, 0.2, 0.08], ds: [0, 0.15, 0.1, 0],
+    drums: { 0: [0, 4, 8, 12], 3: [4, 12], 5: [2, 6, 10, 14], 13: [1, 3, 5, 7, 9, 11, 13, 15] }, t1: { 2: 3, 6: 3, 10: 2, 14: 2 }, t2: { 0: 3, 3: 3, 8: 2, 11: 2 }, t3: {},
+    recipe: ["SELECT to <b>122 BPM</b>. Track 4 → PRESETS a <b>HOUSE</b> or 909 kit.",
+      "Hold SEQ: KICK 1·5·9·13 (four on the floor) · CLAP 5·13 · OPEN HAT 3·7·11·15 · SHAKER on the even keys.",
+      "Track 1 → a deep bass on the <b>offbeats</b>: keys 3, 3, 2, 2 — in between the kicks.",
+      "Track 2 → <b>M1 PIANO</b>. Hold SEL: key 3 (A), KNOB 1 → <b>7TH</b>. Stab key 3 twice, then key 2 twice.",
+      "Hold FX, KNOB 3 → <b>DUCK</b> on. Everything pumps with the kick — that's the house breath."] },
+  { id: "acid", name: "Acid", line: "Squelchy 303 bass.", bpm: 126, swing: 50, kit: "606", key: 9, scale: "MINOR",
+    syn: ["ACID 303", "WARM PAD", "LOFI FLUTE"], oct: [-1, -1, 0], chord: ["OFF", "TRIAD", "OFF"], dust: 0, duck: false, sweep: true,
+    rs: [0.04, 0.3, 0.2, 0.06], ds: [0.12, 0.05, 0.1, 0],
+    drums: { 0: [0, 4, 8, 12], 2: [4, 12], 4: [0, 2, 4, 6, 8, 10, 12, 14], 5: [2, 10] },
+    t1: { 0: [3, "a"], 1: 3, 2: [10, "a"], 4: [5, "s"], 5: 3, 6: 2, 7: [10, "a"], 8: 3, 9: [7, "s"], 10: 3, 12: [6, "a"], 13: [5, "s"], 14: 3, 15: 2 }, t2: { 0: [3, "l"] }, t3: {},
+    recipe: ["SELECT to <b>126 BPM</b>. Track 4 → PRESETS <b>606</b>: KICK 1·5·9·13 · SNARE 5·13 · HAT on every odd key.",
+      "Track 1 → PRESETS <b>ACID 303</b>. Press OCT− once if it's too high.",
+      "PLAY, REC, then play a busy line mostly on key 3 (home), with keys 10, 5, 2, 7, 6 sprinkled in.",
+      "Let some notes <b>overlap</b> — ACID 303 slides between overlapping notes.",
+      "Hold FX and tap key 9 for the <b>filter sweep</b>. That squelch is the acid. Track 2: one long pad chord underneath."] },
+];
+function loadVibe(v) {
+  newProject(); state.vibe = v.id; state.bpm = v.bpm; state.swing = v.swing; state.kit = v.kit; state.key = v.key; state.scale = v.scale;
+  state.dust = v.dust; state.duck = v.duck; state.sweep = !!v.sweep; state.cutMod = 1;
+  [0, 1, 2].forEach(i => { const t = state.tracks[i]; t.preset = SYN(v.syn[i]); t.oct = v.oct[i]; t.chord = v.chord[i]; });
+  state.tracks.forEach((t, i) => { t.rsend = v.rs[i]; t.dsend = v.ds[i]; });
+  Object.entries(v.drums).forEach(([snd, ix]) => ix.forEach(i => state.tracks[3].steps[i].push(+snd)));
+  [v.t1, v.t2, v.t3].forEach((pat, ti) => Object.entries(pat).forEach(([st, val]) => {
+    const [n, fl] = Array.isArray(val) ? val : [val, ""]; const root = keyMidi(ti, n);
+    const ns = fl === "l" ? chordNotes(root, state.tracks[ti].chord) : chordNotes(root, state.tracks[ti].chord).slice(0, isMono(ti) ? 1 : 4);
+    state.tracks[ti].steps[+st] = ns.map(m => ({ m, acc: fl === "a", sld: fl === "s", len: fl === "l" ? 16 : undefined }));
+  }));
+  audio(); applyKit(); applyFx(); applyMix(); startPlay(); say(v.name.toUpperCase()); renderAll();
+}
+function vibeCard() {
+  const v = VIBES.find(x => x.id === state.vibe);
+  let h = "<h2>Vibes: press one, then play along</h2><div class=\"vibes\">" +
+    VIBES.map(x => '<button class="vibebtn' + (x.id === state.vibe ? " on" : "") + '" data-vibe="' + x.id + '">' + x.name + "<small>" + x.bpm + " BPM · " + x.line + "</small></button>").join("") + "</div>";
+  if (!v) return h + '<p class="hear">Each vibe loads all four tracks and starts playing. Then mute and solo tracks, hold FX for tricks — it\'s yours.</p>';
+  h += '<div class="chips">' + ["Bass", "Keys", "Melody", "Drums"].map((n, i) => '<button class="chip' + (state.tracks[i].solo ? " on" : "") + '" data-solo="' + i + '"><i style="background:' + COL[i] + '"></i>Solo ' + n + "</button>").join("") +
+    '<button class="chip" data-stop="1">' + (state.playing ? "■ Stop" : "▶ Play") + "</button></div>";
+  h += '<p class="hear">The steps to build <b>' + v.name + '</b> on your FM-1 are under the panel.</p>';
+  return h;
+}
+
+/* ---------------- lesson UI ---------------- */
+function lessonStep() { return state.mode >= 0 && state.mode < 9 ? LESSONS[state.mode].steps[state.li] : null; }
+function clearHl() { const svg = document.querySelector("#panel svg"); svg.classList.remove("dimmed"); svg.querySelectorAll(".ctl.hl").forEach(e => e.classList.remove("hl")); }
+function ringTo(ids) {
+  const ring = $("hl-ring"); clearHl(); ids = (ids || []).filter(i => $(i));
+  if (!ids.length) { ring.style.display = "none"; return; }
+  const svg = document.querySelector("#panel svg"); svg.classList.add("dimmed"); ids.forEach(i => $(i).classList.add("hl"));
+  const b = $(ids[0]).getBBox(); ring.setAttribute("x", b.x - 9); ring.setAttribute("y", b.y - 9);
+  ring.setAttribute("width", b.width + 18); ring.setAttribute("height", b.height + 18); ring.style.display = "";
+}
+function renderUnder() {
+  const u = $("under"), v = state.mode === 9 && VIBES.find(x => x.id === state.vibe);
+  if (!v) { u.style.display = "none"; return; }
+  u.style.display = "";
+  u.innerHTML = "<h2>Build “" + v.name + "” on your FM-1</h2><ol>" + v.recipe.map(r => "<li>" + r + "</li>").join("") + "</ol>" +
+    '<p class="note">Our recipe, built from SLOOP\'s documented features. Tempos are our picks; your FM-1 may name a sound slightly differently.</p>';
+}
+function renderCard() {
+  renderUnder();
+  const card = $("card");
+  if (state.mode === -1) { ringTo(null); card.innerHTML = state.exploreHtml || exploreCard(); return; }
+  if (state.mode === 9) { ringTo(null); card.innerHTML = vibeCard(); return; }
+  const L = LESSONS[state.mode];
+  if (state.li >= L.steps.length) { ringTo(null);
+    const nx = state.mode < LESSONS.length - 1 ? '<button class="nextbtn" id="nextL">Next lesson →</button>' : '<button class="nextbtn" id="toVibes">&#9733; Try the vibes →</button>';
+    card.innerHTML = '<p class="stepno">' + L.title + " · done</p><h2>Nice!</h2><p>" + L.done + "</p>" + nx; return; }
+  const s = L.steps[state.li];
+  card.innerHTML = '<p class="stepno">' + L.title + " · step " + (state.li + 1) + " of " + L.steps.length + "</p><h2>" + s.say + "</h2>" + (s.hear ? '<p class="hear"><b>You should hear/see:</b> ' + s.hear + "</p>" : "") +
+    (/Hold/.test(s.say) ? '<p class="note">On the real FM-1, keep your finger on the button while you use the keys.</p>' : "");
+  ringTo(s.ring());
+}
+function progress() {
+  if (state.mode >= 0 && state.mode < 9) { const L = LESSONS[state.mode]; let g = 0; while (state.li < L.steps.length && L.steps[state.li].done() && g++ < 20) state.li++; }
+  renderCard();
+}
+function setMode(m) {
+  state.mode = m; state.li = 0; state.exploreHtml = null;
+  document.querySelectorAll(".tab").forEach(b => b.classList.toggle("on", +b.dataset.mode === m));
+  if (m >= 0 && m < 9) { S.played = [0, 0, 0, 0]; S.drums.clear(); S.kitChanges = 0; S.chordPlayed = 0; S.tape = 0; S.echo = 0; S.filt = 0; S.stut = 0;
+    LESSONS[m].setup(); state.seqSound = 0; }
+  renderAll(); progress();
+}
+
+/* ---------------- wiring ---------------- */
+function act(id) {
+  audio();
+  if (id.startsWith("key-")) keyPress(id); else buttonPress(id);
+  if (state.mode === -1) {
+    const c = CARDS[id] || (id.startsWith("key-t") ? CARDS.KEYTOP : id.startsWith("key-b") ? CARDS.KEYBOT : null);
+    if (c) state.exploreHtml = "<h2>" + c[0] + "</h2><p>" + c[1] + "</p>";
+  }
+  renderAll(); progress();
+}
+document.addEventListener("DOMContentLoaded", () => {
+  const svg = document.querySelector("#panel svg");
+  ["scr-top", "scr-wave", "scr-mid", "scr-mid2", "scr-bot"].forEach(i => { const e = $(i); if (e) e.style.display = "none"; });
+  const ns = "http://www.w3.org/2000/svg";
+  const scr = document.createElementNS(ns, "g"); scr.setAttribute("id", "sl-screen"); svg.appendChild(scr);
+  for (let n = 1; n <= 16; n++) { const t = document.createElementNS(ns, "text"); t.setAttribute("id", "dn-" + n);
+    t.setAttribute("x", 59 + (n - 1) * 43.2); t.setAttribute("y", 429); t.setAttribute("text-anchor", "middle"); t.setAttribute("font-size", "8");
+    t.setAttribute("fill", "#fff"); t.setAttribute("class", "f"); t.style.pointerEvents = "none"; t.textContent = DRUM_SHORT[n - 1]; svg.appendChild(t); }
+  const ring = document.createElementNS(ns, "rect"); ring.setAttribute("id", "hl-ring"); ring.setAttribute("rx", 12); ring.setAttribute("fill", "none");
+  ring.setAttribute("stroke", "#111"); ring.setAttribute("stroke-width", 7); ring.setAttribute("stroke-dasharray", "13 9"); ring.style.display = "none"; svg.appendChild(ring);
+  let recT = null, recLong = false, recDown = false;
+  svg.addEventListener("pointerdown", ev => {
+    const g = ev.target.closest(".ctl"); if (!g) return; const id = g.dataset.ctl;
+    if (id === "btn-rec") { recDown = true; recLong = false; recT = setTimeout(() => { recLong = true; clearTrack(); }, 900); return; }
+    act(id);
+  });
+  document.addEventListener("pointerup", () => { if (!recDown) return; recDown = false; clearTimeout(recT); if (!recLong) recClick(); });
+  document.querySelectorAll(".tab").forEach(b => b.addEventListener("click", () => setMode(+b.dataset.mode)));
+  $("card").addEventListener("click", ev => {
+    const vb = ev.target.closest("[data-vibe]"); if (vb) { loadVibe(VIBES.find(v => v.id === vb.dataset.vibe)); renderCard(); return; }
+    const so = ev.target.closest("[data-solo]"); if (so) { const t = state.tracks[+so.dataset.solo]; t.solo = !t.solo; applyMix(); renderAll(); renderCard(); return; }
+    const st = ev.target.closest("[data-stop]"); if (st) { if (state.playing) stopPlay(); else startPlay(); renderAll(); renderCard(); return; }
+    if (ev.target.id === "nextL") setMode(state.mode + 1);
+    if (ev.target.id === "toVibes") setMode(9);
+  });
+  let zoom = 1; const box = $("panelbox"), zs = $("panelscale");
+  const applyZoom = () => { zs.style.transform = zoom === 1 ? "" : "scale(" + zoom + ")"; box.style.height = zoom <= 1 ? "" : zs.getBoundingClientRect().height + "px"; };
+  $("zin").addEventListener("click", () => { zoom = Math.min(2, zoom + 0.15); applyZoom(); });
+  $("zout").addEventListener("click", () => { zoom = Math.max(0.55, zoom - 0.15); applyZoom(); });
+  window.addEventListener("resize", applyZoom);
+  const fsBtn = $("fs");
+  fsBtn.addEventListener("click", () => { if (document.fullscreenElement) document.exitFullscreen(); else if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen(); });
+  document.addEventListener("fullscreenchange", () => { fsBtn.textContent = document.fullscreenElement ? "✕ Exit full screen" : "⛶ Full screen"; });
+  renderAll(); renderCard();
+});
+</script>
+</body></html>
